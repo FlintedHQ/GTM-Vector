@@ -262,27 +262,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Stack Section */}
-        <section id="stack" className="max-w-7xl mx-auto py-24 mb-40">
-          <div className="flex flex-col items-center text-center">
-            <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">Our Stack</div>
-            <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-16">The Revenue Tech Stack</h2>
-            <div className="flex flex-wrap justify-center gap-5 mb-16">
-              {['n8n', 'HubSpot', 'Apollo', 'Instantly', 'Clay', 'ChatGPT', 'Perplexity'].map((tool) => (
-                <div key={tool} className="px-8 py-4 rounded-2xl bg-black border-2 border-white/5 text-gray-400 font-bold hover:border-lime-500 hover:text-white hover:scale-105 transition-all cursor-crosshair flex items-center gap-3 shadow-lg">
-                   {tool === 'n8n' && <Workflow size={18} className="text-lime-500" />}
-                   {tool === 'HubSpot' && <Database size={18} className="text-orange-500" />}
-                   {tool === 'ChatGPT' && <MessageCircle size={18} className="text-blue-500" />}
-                   {tool}
-                </div>
-              ))}
-            </div>
-            <p className="text-2xl text-gray-400 max-w-4xl leading-[1.6] font-medium px-4">
-              <span className="text-white font-black border-b-2 border-lime-500/30">n8n is the nervous system.</span> <span className="text-lime-500 font-black italic">HubSpot is the source of truth.</span> Everything else is a modular endpoint we optimize for sheer output.
-            </p>
-          </div>
-        </section>
-
         {/* FAQ Section */}
         <section id="faq" className="max-w-4xl mx-auto py-24 mb-40">
           <div className="text-center mb-16">
@@ -337,6 +316,14 @@ const App: React.FC = () => {
             </div>
           </div>
         </section>
+
+         <p className="text-2xl text-gray-400 max-w-4xl leading-[1.6] font-medium px-4">
+      <span className="text-white font-black border-b-2 border-lime-500/30">n8n is the nervous system.</span>{' '}
+      <span className="text-lime-500 font-black italic">CRM is the source of truth.</span>{' '}
+      Everything else is a modular endpoint we optimize for sheer output.
+    </p>
+  </div>
+</section>
 
       </main>
 
