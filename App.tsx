@@ -38,6 +38,7 @@ const Navbar = () => (
         <a href="#process" className="hover:text-lime-500 transition-colors">
           Process
         </a>
+        {/* Stack link removed because section is removed */}
         <a href="#faq" className="hover:text-lime-500 transition-colors">
           FAQ
         </a>
@@ -264,8 +265,8 @@ const App: React.FC = () => {
                 Architecting Growth
               </h2>
               <p className="text-gray-400 text-lg leading-relaxed">
-                We don't just "set up tools." We engineer high-velocity revenue engines focused on precision
-                and deliverability.
+                We don't just "set up tools." We engineer high-velocity revenue engines focused on precision and
+                deliverability.
               </p>
             </div>
             <div className="hidden md:block h-px flex-1 bg-gradient-to-r from-white/10 to-transparent mx-12 mb-8" />
@@ -349,10 +350,10 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Minimal Stack Philosophy (kept, but without the removed stack section) */}
-        <section className="max-w-7xl mx-auto pb-24 -mt-6">
-          <div className="flex justify-center">
-            <p className="text-2xl text-gray-400 max-w-4xl leading-[1.6] font-medium px-4 text-center">
+        {/* Replacement for Stack section: keep the sentence only */}
+        <section className="max-w-7xl mx-auto py-24 mb-40">
+          <div className="flex flex-col items-center text-center">
+            <p className="text-2xl text-gray-400 max-w-4xl leading-[1.6] font-medium px-4">
               <span className="text-white font-black border-b-2 border-lime-500/30">
                 n8n is the nervous system.
               </span>{' '}
@@ -392,7 +393,7 @@ const App: React.FC = () => {
             />
             <FAQItem
               question="What tools do you work with?"
-              answer="Our core is the n8n + CRM ecosystem. We integrate this with data layers and high-deliverability outbound platforms."
+              answer="Our core is the n8n + CRM ecosystem. We integrate these with advanced data layers like Clay and high-deliverability platforms like Instantly."
             />
           </div>
         </section>
@@ -408,6 +409,7 @@ const App: React.FC = () => {
               <p className="text-2xl text-gray-400 mb-16 max-w-2xl font-medium">
                 Stop battling friction. Start deploying architecture. Secure your technical audit today.
               </p>
+
               <div className="flex flex-col md:flex-row items-center gap-8">
                 <button
                   onClick={() => setIsModalOpen(true)}
@@ -420,10 +422,7 @@ const App: React.FC = () => {
                   href="mailto:info@gtmvector.com"
                   className="px-12 py-7 bg-white/5 border border-white/10 rounded-2xl font-black text-lg hover:bg-white/10 transition-all flex items-center gap-3 group uppercase tracking-widest"
                 >
-                  <Mail
-                    size={22}
-                    className="group-hover:text-lime-500 group-hover:scale-110 transition-all"
-                  />
+                  <Mail size={22} className="group-hover:text-lime-500 group-hover:scale-110 transition-all" />
                   info@gtmvector.com
                 </a>
               </div>
@@ -468,15 +467,10 @@ const App: React.FC = () => {
       {/* Modal Form */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-          <div
-            className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
-            onClick={() => setIsModalOpen(false)}
-          />
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setIsModalOpen(false)} />
           <div className="relative w-full max-w-xl bg-[#05070a] border border-white/10 rounded-[40px] p-10 md:p-14 shadow-2xl animate-in zoom-in duration-500">
             <div className="w-12 h-1 bg-lime-500 mb-8 rounded-full" />
-            <h3 className="text-4xl font-jakarta font-black mb-4 tracking-tight">
-              Infiltration Form
-            </h3>
+            <h3 className="text-4xl font-jakarta font-black mb-4 tracking-tight">Infiltration Form</h3>
             <p className="text-gray-400 mb-10 text-lg font-medium leading-relaxed">
               Secure your slot. We review your architecture within a 48-hour window.
             </p>
