@@ -15,15 +15,13 @@ import { motion } from "framer-motion";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import logo from "./assets/gtm-vector-logo.png";
+
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 const CAL_LINK = "https://cal.com/dino-lukovac-7ap2jt/freegtmaudit";
-
-// Use a safe hosted logo so Netlify build never fails.
-// Replace later with a real local asset once you upload an actual PNG.
-import logo from "./assets/gtm-vector-logo.png";
 
 const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
   const [displayedText, setDisplayedText] = useState(text);
@@ -64,7 +62,7 @@ const Navbar = () => (
   <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 bg-black/80 backdrop-blur-md border-b border-white/5">
     <div className="max-w-7xl mx-auto flex items-center justify-between">
       <a href="#" className="flex items-center gap-3 group">
-        <img src={LOGO_URL} alt="GTM Vector" className="h-8 md:h-10" />
+        <img src={logo} alt="GTM Vector" className="h-8 md:h-10" />
       </a>
 
       <div className="hidden md:flex items-center gap-10 text-xs font-bold uppercase tracking-widest text-gray-500">
@@ -79,7 +77,6 @@ const Navbar = () => (
         </a>
       </div>
 
-      {/* Removed INIT_AUDIT button as requested */}
       <div className="w-[1px] h-8 bg-white/10 hidden md:block" />
     </div>
   </nav>
@@ -348,11 +345,10 @@ const App: React.FC = () => {
           </motion.div>
         </section>
 
-        {/* STATS MARQUEE (single line only) */}
+        {/* STATS MARQUEE */}
         <section className="w-screen relative left-[50%] -translate-x-[50%] border-y border-white/10 bg-white/5 py-4 overflow-hidden mb-32">
           <div className="marquee">
             <div className="marquee__track font-mono text-sm text-gray-400">
-              {/* Duplicate content once inside the track for seamless loop */}
               <div className="marquee__item">
                 <span className="flex items-center gap-2">
                   <Zap size={14} className="text-lime-500" /> +73% BOOKING RATE
@@ -488,18 +484,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* SYSTEM LINE */}
-        <section className="max-w-7xl mx-auto py-24 mb-40">
-          <div className="flex flex-col items-center text-center relative">
-            <CornerBrackets />
-            <p className="text-2xl text-gray-400 max-w-4xl leading-[1.6] font-medium px-4 z-10 relative">
-              <span className="text-white font-black border-b-2 border-lime-500/30">n8n is the nervous system.</span>{" "}
-              <span className="text-lime-500 font-black italic">CRM is the source of truth.</span>{" "}
-              Everything else is a modular endpoint we optimize for output.
-            </p>
-          </div>
-        </section>
-
         {/* FAQ */}
         <section id="faq" className="max-w-4xl mx-auto py-24 mb-40">
           <div className="text-center mb-16">
@@ -577,7 +561,7 @@ const App: React.FC = () => {
       <footer className="relative z-10 py-16 px-6 border-t border-white/5 bg-black">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
           <div className="flex items-center gap-4">
-            <img src={LOGO_URL} alt="GTM Vector" className="h-10 md:h-12" />
+            <img src={logo} alt="GTM Vector" className="h-10 md:h-12" />
           </div>
 
           <p className="text-xs font-bold text-gray-600 uppercase tracking-[0.3em] text-center">
@@ -586,7 +570,6 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Cursor proximity effect */}
       <div
         className="fixed w-10 h-10 rounded-full border-2 border-lime-500/20 pointer-events-none z-[9999] transition-transform duration-75 ease-out hidden md:block"
         style={{ transform: `translate(${mousePos.x - 20}px, ${mousePos.y - 20}px)` }}
