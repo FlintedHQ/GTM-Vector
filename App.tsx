@@ -1,73 +1,73 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import {
   ArrowRight,
   ShieldCheck,
   Zap,
-  ChevronDown,
-  Mail,
   Target,
   Cpu,
   Workflow,
   Layers,
   Search,
-  MessageCircle,
-  Database,
   Activity,
-} from 'lucide-react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+} from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
-// --- Utility for cleaner tailwind classes ---
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+// ✅ Put your logo file here (see steps below)
+import Logo from "./assets/gtm-vector-logo.png";
 
-// --- 1. The "Scramble" Text Effect (The Hacker Vibe) ---
+// Cal link (used everywhere)
+const CAL_LINK = "https://cal.com/dino-lukovac-7ap2jt/freegtmaudit";
+
+// --- 1) Scramble text (kept from your version) ---
 const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
-  const [displayedText, setDisplayedText] = useState(text);
+  const [displayedText, setDisplayedText] = React.useState(text);
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
 
-  useEffect(() => {
+  React.useEffect(() => {
     let iteration = 0;
     const interval = setInterval(() => {
       setDisplayedText((prev) =>
         prev
           .split("")
-          .map((letter, index) => {
+          .map((_, index) => {
             if (index < iteration) return text[index];
             return chars[Math.floor(Math.random() * chars.length)];
           })
           .join("")
       );
+
       if (iteration >= text.length) clearInterval(interval);
       iteration += 1 / 3;
     }, 30);
+
     return () => clearInterval(interval);
   }, [text]);
 
   return <span className={className}>{displayedText}</span>;
 };
 
-// --- 2. Technical "Corner Brackets" (The HUD Look) ---
+// --- 2) HUD corner brackets ---
 const CornerBrackets = () => (
   <>
-    <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-lime-500/50" />
-    <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-lime-500/50" />
-    <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-lime-500/50" />
-    <div className="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-lime-500/50" />
+    <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-lime-500/40" />
+    <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-lime-500/40" />
+    <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-lime-500/40" />
+    <div className="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-lime-500/40" />
   </>
 );
 
-// --- Components ---
-
+// --- Header (logo fixed, init button removed) ---
 const Navbar = () => (
-  <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 bg-black/80 backdrop-blur-md border-b border-white/5">
+  <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 bg-black/75 backdrop-blur-md border-b border-white/5">
     <div className="max-w-7xl mx-auto flex items-center justify-between">
-      <div className="flex items-center gap-3 group cursor-pointer">
-        {/* Replaced SVG with provided logo image */}
-        <img src="https://i.ibb.co/7n64Kz0/image_0.png" alt="GTM Vector Logo" className="h-8 md:h-10" />
-      </div>
+      <a href="#" className="flex items-center gap-3">
+        <img
+          src={Logo}
+          alt="GTM Vector"
+          className="h-8 md:h-10 w-auto object-contain"
+          draggable={false}
+        />
+      </a>
 
       <div className="hidden md:flex items-center gap-10 text-xs font-bold uppercase tracking-widest text-gray-500">
         <a href="#services" className="hover:text-lime-500 transition-colors">
@@ -81,20 +81,20 @@ const Navbar = () => (
         </a>
       </div>
 
-      <button className="bg-white/5 hover:bg-lime-500 hover:text-black border border-white/10 text-white px-5 py-2 text-xs font-mono uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-        // init_audit
-      </button>
+      {/* ✅ Removed // init_audit button */}
+      <div className="w-[110px] hidden md:block" />
     </div>
   </nav>
 );
 
+// --- subtle particles ---
 const ParticleDrift = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let particles: {
@@ -106,7 +106,7 @@ const ParticleDrift = () => {
       opacity: number;
     }[] = [];
 
-    const particleCount = 50;
+    const particleCount = 55;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -120,13 +120,14 @@ const ParticleDrift = () => {
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           size: Math.random() * 1.5 + 0.2,
-          speedX: (Math.random() - 0.5) * 0.3,
-          speedY: (Math.random() - 0.5) * 0.3,
-          opacity: Math.random() * 0.3 + 0.05,
+          speedX: (Math.random() - 0.5) * 0.25,
+          speedY: (Math.random() - 0.5) * 0.25,
+          opacity: Math.random() * 0.25 + 0.06,
         });
       }
     };
 
+    let raf = 0;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach((p) => {
@@ -143,15 +144,18 @@ const ParticleDrift = () => {
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
-      requestAnimationFrame(animate);
+      raf = requestAnimationFrame(animate);
     };
 
     resize();
     createParticles();
     animate();
 
-    window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
+    window.addEventListener("resize", resize);
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(raf);
+    };
   }, []);
 
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
@@ -166,9 +170,9 @@ const ServiceCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="glass-card p-10 rounded-[32px] group relative overflow-hidden flex flex-col items-start gap-5 border border-white/5 hover:border-lime-500/30 transition-colors">
+  <div className="p-10 rounded-[32px] group relative overflow-hidden flex flex-col items-start gap-5 border border-white/5 hover:border-lime-500/25 transition-colors bg-white/[0.02] backdrop-blur-xl">
     <CornerBrackets />
-    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:bg-lime-500 group-hover:text-black group-hover:border-lime-500 transition-all duration-500 shadow-inner z-10 relative">
+    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 group-hover:bg-lime-500 group-hover:text-black group-hover:border-lime-500 transition-all duration-500 shadow-inner z-10 relative">
       <Icon size={28} />
     </div>
     <h3 className="text-2xl font-bold group-hover:text-lime-500 transition-colors tracking-tight z-10 relative">
@@ -179,7 +183,7 @@ const ServiceCard = ({
 );
 
 const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <div className="border-b border-white/5 last:border-0 overflow-hidden">
@@ -187,27 +191,21 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
         onClick={() => setIsOpen(!isOpen)}
         className="w-full py-7 flex items-center justify-between text-left group transition-all"
       >
-        <span
-          className={`text-lg font-bold transition-all ${
-            isOpen ? 'text-lime-500 tracking-wide' : 'text-gray-300'
-          }`}
-        >
+        <span className={`text-lg font-bold transition-all ${isOpen ? "text-lime-500" : "text-gray-300"}`}>
           {question}
         </span>
         <div
           className={`p-2 rounded-full border transition-all duration-500 ${
-            isOpen
-              ? 'border-lime-500 rotate-180 bg-lime-500 text-black'
-              : 'border-white/10 text-gray-500'
+            isOpen ? "border-lime-500 rotate-180 bg-lime-500 text-black" : "border-white/10 text-gray-500"
           }`}
         >
-          <ChevronDown size={18} />
+          <span className="block rotate-0">⌄</span>
         </div>
       </button>
 
       <div
         className={`transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-          isOpen ? 'max-h-60 pb-8 opacity-100' : 'max-h-0 opacity-0'
+          isOpen ? "max-h-60 pb-8 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <p className="text-gray-400 leading-relaxed font-medium pl-2 border-l-2 border-lime-500/20">
@@ -218,41 +216,23 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
   );
 };
 
-// --- Main Page ---
-
 const App: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -40]);
 
   return (
-    <div className="min-h-screen relative animated-bg selection:bg-lime-500 selection:text-black bg-[#050505] text-white font-sans overflow-x-hidden">
-      <div className="noise-overlay" />
+    <div className="min-h-screen relative selection:bg-lime-500 selection:text-black bg-[#050505] text-white font-sans overflow-x-hidden">
+      {/* Background grid */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      </div>
+
       <ParticleDrift />
       <Navbar />
 
-      {/* Grid Shimmer Overlay */}
-      <div className="fixed inset-0 shimmer-grid opacity-30 pointer-events-none z-0" />
-
-      {/* Light Field / Beams */}
-      <div className="fixed top-0 left-1/4 w-[800px] h-[800px] bg-blue-600/5 blur-[160px] rounded-full pointer-events-none beam-mask z-0 mix-blend-screen" />
-      <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-lime-600/5 blur-[140px] rounded-full pointer-events-none beam-mask z-0 mix-blend-screen" />
-
-      {/* Main Content */}
       <main className="relative z-10 pt-32 px-6">
-        {/* Hero Section */}
+        {/* HERO */}
         <section className="max-w-7xl mx-auto min-h-[80vh] flex flex-col justify-center relative text-center">
-          
-          {/* Decorative "System Status" Line */}
           <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-lime-500/60 uppercase tracking-widest mb-8">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 bg-lime-500 rounded-full animate-pulse" />
@@ -262,74 +242,96 @@ const App: React.FC = () => {
             <span>v2.4.0 Deployment</span>
           </div>
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+          <motion.h1
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-6xl md:text-[100px] font-jakarta font-extrabold tracking-tighter mb-10 leading-[0.9] text-glow"
+            className="text-6xl md:text-[100px] font-extrabold tracking-tighter mb-10 leading-[0.9]"
           >
             Outbound GTM Architecture <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-emerald-400 to-lime-500">
-               <ScrambleText text="BUILT TO SCALE" />
+              <ScrambleText text="BUILT TO SCALE" />
             </span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.35 }}
             className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-400 mb-14 leading-relaxed font-medium"
           >
             From ICP definition to tooling and workflows, we design outbound systems teams can actually run.
           </motion.p>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+          {/* ✅ Direct to calendar */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col items-center justify-center gap-8"
+            transition={{ delay: 0.55 }}
+            className="flex justify-center"
           >
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="group relative px-14 py-6 bg-lime-500 text-black font-black text-lg rounded-2xl hover:bg-white transition-all flex items-center gap-4 shadow-[0_20px_50px_rgba(132,204,22,0.3)] hover:scale-110 active:scale-95 border-beam"
+            <a
+              href={CAL_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="group relative px-14 py-6 bg-lime-500 text-black font-black text-lg rounded-2xl hover:bg-white transition-all flex items-center gap-4 shadow-[0_20px_50px_rgba(132,204,22,0.28)] hover:scale-[1.04] active:scale-95"
             >
               Book a Free GTM Audit
-              <ArrowRight size={22} strokeWidth={3} className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all" />
-            </button>
+              <ArrowRight size={22} strokeWidth={3} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+            </a>
           </motion.div>
 
-          {/* Floating Data Graphic removed as requested */}
-
+          {/* subtle floating accent */}
+          <motion.div style={{ y }} className="pointer-events-none absolute inset-x-0 -bottom-16 h-32 opacity-20">
+            <div className="mx-auto max-w-4xl h-full bg-gradient-to-r from-transparent via-lime-500/30 to-transparent blur-2xl" />
+          </motion.div>
         </section>
 
-        {/* --- STATS BAND (Ticker Tape Style) --- */}
+        {/* ✅ MOVING STATS BAND */}
         <section className="w-screen relative left-[50%] -translate-x-[50%] border-y border-white/10 bg-white/5 py-4 overflow-hidden mb-32">
-          <div className="flex whitespace-nowrap gap-12 animate-marquee font-mono text-sm text-gray-400">
-            {[...Array(10)].map((_, i) => (
-              <React.Fragment key={i}>
-                <span className="flex items-center gap-2"><Zap size={14} className="text-lime-500"/> +73% BOOKING RATE</span>
-                <span className="text-white/20">///</span>
-                <span className="flex items-center gap-2"><Activity size={14} className="text-lime-500"/> 100% DELIVERABILITY</span>
-                <span className="text-white/20">///</span>
-                <span className="flex items-center gap-2"><Cpu size={14} className="text-lime-500"/> -85% MANUAL WORK</span>
-                <span className="text-white/20">///</span>
-              </React.Fragment>
-            ))}
+          <div className="marquee">
+            <div className="marquee__track font-mono text-sm text-gray-400">
+              <div className="marquee__content">
+                <span className="flex items-center gap-2">
+                  <Zap size={14} className="text-lime-500" /> +73% BOOKING RATE
+                </span>
+                <span className="text-white/20 mx-6">///</span>
+                <span className="flex items-center gap-2">
+                  <Activity size={14} className="text-lime-500" /> 100% DELIVERABILITY
+                </span>
+                <span className="text-white/20 mx-6">///</span>
+                <span className="flex items-center gap-2">
+                  <Cpu size={14} className="text-lime-500" /> -85% MANUAL WORK
+                </span>
+                <span className="text-white/20 mx-6">///</span>
+              </div>
+
+              {/* duplicate for seamless loop */}
+              <div className="marquee__content" aria-hidden="true">
+                <span className="flex items-center gap-2">
+                  <Zap size={14} className="text-lime-500" /> +73% BOOKING RATE
+                </span>
+                <span className="text-white/20 mx-6">///</span>
+                <span className="flex items-center gap-2">
+                  <Activity size={14} className="text-lime-500" /> 100% DELIVERABILITY
+                </span>
+                <span className="text-white/20 mx-6">///</span>
+                <span className="flex items-center gap-2">
+                  <Cpu size={14} className="text-lime-500" /> -85% MANUAL WORK
+                </span>
+                <span className="text-white/20 mx-6">///</span>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Services Section */}
+        {/* SERVICES */}
         <section id="services" className="max-w-7xl mx-auto py-24 mb-24">
           <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
             <div className="max-w-xl">
-              <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
-                What we do
-              </div>
-              <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-8">
-                Architecting Growth
-              </h2>
+              <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">What we do</div>
+              <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-8">Architecting Growth</h2>
               <p className="text-gray-400 text-lg leading-relaxed">
-                We don't just "set up tools." We engineer high-velocity revenue engines focused on precision and
-                deliverability.
+                We don’t just set up tools. We engineer high-velocity revenue engines focused on precision and deliverability.
               </p>
             </div>
             <div className="hidden md:block h-px flex-1 bg-gradient-to-r from-white/10 to-transparent mx-12 mb-8" />
@@ -339,30 +341,26 @@ const App: React.FC = () => {
             <ServiceCard
               icon={Target}
               title="ICP & Targeting"
-              description="Deep-dive persona research and data source aggregation. We find your exact buyers and verify every entry with mathematical precision."
+              description="Deep-dive persona research and data sourcing. We find your exact buyers and validate the list."
             />
             <ServiceCard
               icon={ShieldCheck}
               title="Infrastructure"
-              description="Bulletproof deliverability setup. Secondary domains, SPF/DKIM/DMARC alignment, and hyper-diligent inbox warmups."
+              description="Secondary domains, SPF/DKIM/DMARC alignment, warming, and guardrails to protect deliverability."
             />
             <ServiceCard
               icon={Workflow}
               title="Automation & RevOps"
-              description="n8n-driven workflows synced with HubSpot. Automated data enrichment, intent signals, and perpetual CRM hygiene."
+              description="Workflow automation + CRM hygiene so every lead, touch, and outcome is tracked correctly."
             />
           </div>
         </section>
 
-        {/* Process Section */}
+        {/* PROCESS */}
         <section id="process" className="max-w-5xl mx-auto py-24 mb-24 relative">
           <div className="text-center mb-24">
-            <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
-              Methodology
-            </div>
-            <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-8">
-              The Vector Blueprint
-            </h2>
+            <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">Methodology</div>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-8">The Vector Blueprint</h2>
             <p className="text-gray-400 text-lg">A ruthless commitment to operational maturity.</p>
           </div>
 
@@ -371,24 +369,24 @@ const App: React.FC = () => {
 
             {[
               {
-                step: '01',
-                title: 'Audit',
-                duration: '48h',
-                desc: 'Exhaustive review of current stack, deliverability health, and CRM bottlenecks. No stone left unturned.',
+                step: "01",
+                title: "Audit",
+                duration: "48h",
+                desc: "Review of deliverability, tooling, ICP, messaging, and CRM health. Clear gaps. Clear fixes.",
                 icon: Search,
               },
               {
-                step: '02',
-                title: 'Build',
-                duration: '2–4 weeks',
-                desc: 'Heavy lifting: Infrastructure setup, complex tool integration, and high-level n8n workflow engineering.',
+                step: "02",
+                title: "Build",
+                duration: "2–4 weeks",
+                desc: "Infrastructure + workflow engineering. Tooling wired. Process documented. System stress-tested.",
                 icon: Cpu,
               },
               {
-                step: '03',
-                title: 'Handover',
-                duration: 'Documentation + Training',
-                desc: 'Full ownership transfer. SOPs, technical documentation, and intensive team onboarding for long-term independence.',
+                step: "03",
+                title: "Handover",
+                duration: "Docs + Training",
+                desc: "You own it. SOPs, playbooks, onboarding, and operating cadence so the engine runs without you.",
                 icon: Layers,
               },
             ].map((item, i) => (
@@ -399,7 +397,7 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="glass-card flex-1 p-8 rounded-3xl border-l-4 border-l-lime-500/30 group-hover:border-l-lime-500 relative overflow-hidden">
+                <div className="flex-1 p-8 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl relative overflow-hidden">
                   <CornerBrackets />
                   <div className="flex flex-wrap items-center gap-4 mb-4 z-10 relative">
                     <h4 className="text-3xl font-bold tracking-tight">{item.title}</h4>
@@ -414,200 +412,76 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Replacement for Stack section: keep the sentence only */}
-        <section className="max-w-7xl mx-auto py-24 mb-40">
-          <div className="flex flex-col items-center text-center relative">
-            <CornerBrackets />
-            <p className="text-2xl text-gray-400 max-w-4xl leading-[1.6] font-medium px-4 z-10 relative">
-              <span className="text-white font-black border-b-2 border-lime-500/30">
-                n8n is the nervous system.
-              </span>{' '}
-              <span className="text-lime-500 font-black italic">CRM is the source of truth.</span>{' '}
-              Everything else is a modular endpoint we optimize for sheer output.
-            </p>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
+        {/* FAQ */}
         <section id="faq" className="max-w-4xl mx-auto py-24 mb-40">
           <div className="text-center mb-16">
-            <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
-              Clarifications
-            </div>
-            <h2 className="text-4xl md:text-5xl font-jakarta font-bold tracking-tight">
-              Intelligence Briefing
-            </h2>
+            <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">Clarifications</div>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Intelligence Briefing</h2>
           </div>
 
           <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[40px] px-10 py-6 shadow-2xl relative overflow-hidden">
             <CornerBrackets />
             <div className="z-10 relative">
-            <FAQItem
-              question="Who is this for?"
-              answer="B2B SaaS and high-ticket service agencies looking to transition founders away from the keyboard into a scalable, automated engine that processes thousands of personalized leads monthly."
-            />
-            <FAQItem
-              question="What do you deliver in the audit?"
-              answer="A high-impact strategic briefing document covering technical domain health, data architectures, and a prioritized build roadmap designed for immediate execution."
-            />
-            <FAQItem
-              question="How long does setup take?"
-              answer="We move fast. Standard build-outs are completed within 14-28 days, including full validation and stress-testing."
-            />
-            <FAQItem
-              question="Do you run campaigns for us or hand it over?"
-              answer="We are systems architects. We build the machinery and train your team to operate it at peak performance. We ensure you own your infrastructure."
-            />
-            <FAQItem
-              question="What tools do you work with?"
-              answer="Our core is the n8n + CRM ecosystem. We integrate these with advanced data layers like Clay and high-deliverability platforms like Instantly."
-            />
+              <FAQItem
+                question="Who is this for?"
+                answer="B2B SaaS and high-ticket service teams that want a repeatable outbound engine and clean CRM operations."
+              />
+              <FAQItem
+                question="What happens in the audit?"
+                answer="We review your current setup and return a prioritized roadmap (infra, tooling, process, and quick wins)."
+              />
+              <FAQItem
+                question="Do you run campaigns or hand it over?"
+                answer="We build + document + train so you own the system and can run it consistently."
+              />
             </div>
           </div>
         </section>
 
-        {/* Final CTA Section */}
+        {/* FINAL CTA (button centered + direct link) */}
         <section className="max-w-7xl mx-auto py-24 mb-48">
           <div className="relative group p-[2px] rounded-[48px] overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-lime-500 via-emerald-500 to-blue-500 animate-gradient-move opacity-50 group-hover:opacity-100 transition-opacity" />
-            <div className="relative bg-[#02040a] rounded-[46px] py-32 px-10 text-center flex flex-col items-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-lime-500 via-emerald-500 to-blue-500 animate-gradient-move opacity-40 group-hover:opacity-70 transition-opacity" />
+            <div className="relative bg-[#02040a] rounded-[46px] py-28 px-10 text-center flex flex-col items-center overflow-hidden">
               <CornerBrackets />
-              <div className="z-10 relative">
-              <h2 className="text-5xl md:text-8xl font-jakarta font-black mb-10 tracking-tighter leading-[0.9]">
-                Ready to Upgrade?
-              </h2>
-              <p className="text-2xl text-gray-400 mb-16 max-w-2xl font-medium">
-                Stop battling friction. Start deploying architecture. Secure your technical audit today.
-              </p>
+              <div className="z-10 relative max-w-3xl">
+                <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.95]">Ready to Upgrade?</h2>
+                <p className="text-xl md:text-2xl text-gray-400 mb-14 font-medium">
+                  Stop battling friction. Start deploying architecture. Secure your free GTM audit today.
+                </p>
 
-              <div className="flex flex-col md:flex-row items-center gap-8">
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="group relative px-16 py-7 bg-lime-500 text-black font-black text-2xl rounded-2xl hover:bg-white transition-all shadow-[0_25px_60px_rgba(132,204,22,0.4)] hover:scale-110 active:scale-95 border-beam"
-                >
-                  Book a Free GTM Audit
-                  <ArrowRight size={22} strokeWidth={3} className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all" />
-                </button>
-              </div>
+                {/* ✅ centered */}
+                <div className="flex justify-center">
+                  <a
+                    href={CAL_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group relative px-14 py-6 bg-lime-500 text-black font-black text-xl rounded-2xl hover:bg-white transition-all shadow-[0_25px_60px_rgba(132,204,22,0.35)] hover:scale-[1.04] active:scale-95 inline-flex items-center gap-3"
+                  >
+                    Book a Free GTM Audit
+                    <ArrowRight size={22} strokeWidth={3} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-16 px-6 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex items-center gap-4 group cursor-pointer">
-            {/* Replaced SVG with provided logo image */}
-            <img src="https://i.ibb.co/7n64Kz0/image_0.png" alt="GTM Vector Logo" className="h-12 md:h-16" />
+      {/* FOOTER (logo fixed + right text) */}
+      <footer className="relative z-10 py-12 px-6 border-t border-white/5 bg-black">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-4">
+            <img src={Logo} alt="GTM Vector" className="h-10 md:h-12 w-auto object-contain" draggable={false} />
           </div>
 
-          <p className="text-xs font-bold text-gray-600 uppercase tracking-[0.3em]">
-            © 2024 GTM Vector Architecture. Engineering for revenue.
+          <p className="text-xs font-bold text-gray-600 uppercase tracking-[0.2em] text-center md:text-right">
+            © 2025 GTM Vector. All rights reserved.
           </p>
         </div>
       </footer>
-
-      {/* Modal Form */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={() => setIsModalOpen(false)} />
-          <div className="relative w-full max-w-xl bg-[#05070a] border border-white/10 rounded-[40px] p-10 md:p-14 shadow-2xl animate-in zoom-in duration-500 overflow-hidden">
-            <CornerBrackets />
-            <div className="z-10 relative">
-            <div className="w-12 h-1 bg-lime-500 mb-8 rounded-full" />
-            <h3 className="text-4xl font-jakarta font-black mb-4 tracking-tight">Infiltration Form</h3>
-            <p className="text-gray-400 mb-10 text-lg font-medium leading-relaxed">
-              Secure your slot. We review your architecture within a 48-hour window.
-            </p>
-
-            <form
-              className="space-y-6"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setIsModalOpen(false);
-                alert('System update: Audit request dispatched.');
-              }}
-            >
-              <div>
-                <label className="block text-[10px] font-black text-gray-500 mb-3 uppercase tracking-[0.2em]">
-                  Deployment Email
-                </label>
-                <input
-                  type="email"
-                  required
-                  placeholder="name@company.com"
-                  className="w-full px-5 py-5 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-lime-500 transition-all text-white font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black text-gray-500 mb-3 uppercase tracking-[0.2em]">
-                  Intelligence Link (LinkedIn)
-                </label>
-                <input
-                  type="text"
-                  placeholder="linkedin.com/in/..."
-                  className="w-full px-5 py-5 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-lime-500 transition-all text-white font-bold"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black text-gray-500 mb-3 uppercase tracking-[0.2em]">
-                  Personnel Count
-                </label>
-                <select className="w-full px-5 py-5 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-lime-500 transition-all text-white font-bold appearance-none">
-                  <option className="bg-[#05070a]">1-10 Employees</option>
-                  <option className="bg-[#05070a]">11-50 Employees</option>
-                  <option className="bg-[#05070a]">51-200 Employees</option>
-                  <option className="bg-[#05070a]">201+ Employees</option>
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-6 bg-lime-500 text-black font-black rounded-2xl hover:bg-white transition-all text-xl shadow-2xl"
-              >
-                Confirm Deployment
-              </button>
-            </form>
-
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="mt-8 text-gray-600 hover:text-white transition-colors text-xs font-black uppercase tracking-widest w-full text-center"
-            >
-              Abort Mission
-            </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cursor proximity effect */}
-      <div
-        className="fixed w-10 h-10 rounded-full border-2 border-lime-500/20 pointer-events-none z-[9999] transition-transform duration-75 ease-out hidden md:block"
-        style={{
-          transform: `translate(${mousePos.x - 20}px, ${mousePos.y - 20}px)`,
-        }}
-      >
-        <div className="w-1 h-1 bg-lime-500 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_15px_#84cc16]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-lime-500/40" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-lime-500/40" />
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-0.5 bg-lime-500/40" />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-0.5 bg-lime-500/40" />
-      </div>
     </div>
   );
 };
 
 export default App;
-
-// --- CSS Additions needed in global.css for the marquee ---
-// @keyframes marquee {
-//   0% { transform: translateX(0); }
-//   100% { transform: translateX(-50%); }
-// }
-// .animate-marquee {
-//   animation: marquee 20s linear infinite;
-// }
