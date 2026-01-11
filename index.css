@@ -2,32 +2,30 @@
 .marquee {
   width: 100%;
   overflow: hidden;
-  position: relative;
 }
 
 .marquee__track {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
   white-space: nowrap;
   will-change: transform;
-  animation: marquee 28s linear infinite;
+  animation: marquee 26s linear infinite;
 }
 
 .marquee__item {
   display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
+  padding-right: 3rem;
 }
 
-/* Right to left */
+/* One continuous scroll. We duplicate the content once in App.tsx, so -50% is correct. */
 @keyframes marquee {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
-}
-
-/* spacing */
-.marquee__track > * {
-  margin-right: 0;
 }
