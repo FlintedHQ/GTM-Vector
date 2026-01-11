@@ -59,7 +59,7 @@ const CornerBrackets = () => (
 );
 
 const Navbar = () => (
-  <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 bg-black/80 backdrop-blur-md border-b border-white/5">
+  <nav className="fixed top-0 left-0 right-0 z-50 py-3 md:py-4 px-5 md:px-12 bg-black/80 backdrop-blur-md border-b border-white/5">
     <div className="max-w-7xl mx-auto flex items-center justify-between">
       <a href="#" className="flex items-center gap-3 group">
         <img src={logo} alt="GTM Vector" className="h-8 md:h-10" />
@@ -160,12 +160,12 @@ const ServiceCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="glass-card p-10 rounded-[32px] group relative overflow-hidden flex flex-col items-start gap-5 border border-white/5 hover:border-lime-500/30 transition-colors">
+  <div className="glass-card p-8 md:p-10 rounded-[28px] md:rounded-[32px] group relative overflow-hidden flex flex-col items-start gap-5 border border-white/5 hover:border-lime-500/30 transition-colors">
     <CornerBrackets />
-    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:bg-lime-500 group-hover:text-black group-hover:border-lime-500 transition-all duration-500 shadow-inner z-10 relative">
-      <Icon size={28} />
+    <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:bg-lime-500 group-hover:text-black group-hover:border-lime-500 transition-all duration-500 shadow-inner z-10 relative">
+      <Icon size={26} />
     </div>
-    <h3 className="text-2xl font-bold group-hover:text-lime-500 transition-colors tracking-tight z-10 relative">
+    <h3 className="text-xl md:text-2xl font-bold group-hover:text-lime-500 transition-colors tracking-tight z-10 relative">
       {title}
     </h3>
     <p className="text-gray-400 leading-relaxed font-medium z-10 relative">{description}</p>
@@ -179,11 +179,11 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
     <div className="border-b border-white/5 last:border-0 overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-7 flex items-center justify-between text-left group transition-all"
+        className="w-full py-5 md:py-7 flex items-center justify-between text-left group transition-all gap-4"
       >
         <span
           className={cn(
-            "text-lg font-bold transition-all",
+            "text-base md:text-lg font-bold transition-all",
             isOpen ? "text-lime-500 tracking-wide" : "text-gray-300"
           )}
         >
@@ -191,7 +191,7 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
         </span>
         <div
           className={cn(
-            "p-2 rounded-full border transition-all duration-500",
+            "p-2 rounded-full border transition-all duration-500 shrink-0",
             isOpen
               ? "border-lime-500 rotate-180 bg-lime-500 text-black"
               : "border-white/10 text-gray-500"
@@ -204,7 +204,7 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
       <div
         className={cn(
           "transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
-          isOpen ? "max-h-96 pb-8 opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "max-h-96 pb-6 md:pb-8 opacity-100" : "max-h-0 opacity-0"
         )}
       >
         <p className="text-gray-400 leading-relaxed font-medium pl-2 border-l-2 border-lime-500/20">
@@ -232,30 +232,30 @@ const ProcessCard = ({
   bullets: string[];
   output?: string;
 }) => (
-  <div className="glass-card flex-1 p-8 rounded-3xl border border-white/10 relative overflow-hidden">
+  <div className="glass-card flex-1 p-6 md:p-8 rounded-3xl border border-white/10 relative overflow-hidden">
     <CornerBrackets />
-    <div className="flex items-start justify-between gap-6 z-10 relative">
-      <div className="flex items-start gap-5">
-        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
-          <Icon size={22} />
+    <div className="flex items-start justify-between gap-4 md:gap-6 z-10 relative">
+      <div className="flex items-start gap-4 md:gap-5">
+        <div className="w-11 h-11 md:w-12 md:h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 shrink-0">
+          <Icon size={20} />
         </div>
         <div>
           <div className="flex items-center gap-3">
-            <span className="w-10 h-10 rounded-2xl bg-lime-500 text-black font-black flex items-center justify-center">
+            <span className="w-9 h-9 md:w-10 md:h-10 rounded-2xl bg-lime-500 text-black font-black flex items-center justify-center">
               {step}
             </span>
-            <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
+            <h3 className="text-xl md:text-2xl font-bold tracking-tight">{title}</h3>
           </div>
           <p className="text-gray-400 mt-3 leading-relaxed font-medium max-w-2xl">{intro}</p>
         </div>
       </div>
 
-      <div className="text-[11px] font-black uppercase tracking-widest text-lime-400 whitespace-nowrap mt-2">
+      <div className="text-[10px] md:text-[11px] font-black uppercase tracking-widest text-lime-400 whitespace-nowrap mt-2">
         {duration}
       </div>
     </div>
 
-    <ul className="mt-6 space-y-3 text-gray-300/90 font-medium z-10 relative">
+    <ul className="mt-5 md:mt-6 space-y-3 text-gray-300/90 font-medium z-10 relative">
       {bullets.map((b, i) => (
         <li key={i} className="flex items-start gap-3">
           <span className="mt-2 w-1.5 h-1.5 rounded-full bg-lime-500/70 shrink-0" />
@@ -265,7 +265,7 @@ const ProcessCard = ({
     </ul>
 
     {output && (
-      <div className="mt-6 text-gray-400 font-medium z-10 relative">
+      <div className="mt-5 md:mt-6 text-gray-400 font-medium z-10 relative">
         <span className="text-gray-300 font-bold">Output:</span> {output}
       </div>
     )}
@@ -291,10 +291,10 @@ const App: React.FC = () => {
       <div className="fixed top-0 left-1/4 w-[800px] h-[800px] bg-blue-600/5 blur-[160px] rounded-full pointer-events-none beam-mask z-0 mix-blend-screen" />
       <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-lime-600/5 blur-[140px] rounded-full pointer-events-none beam-mask z-0 mix-blend-screen" />
 
-      <main className="relative z-10 pt-32 px-6">
+      <main className="relative z-10 pt-28 md:pt-32 px-6">
         {/* HERO */}
-        <section className="max-w-7xl mx-auto min-h-[80vh] flex flex-col justify-center relative text-center">
-          <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-lime-500/60 uppercase tracking-widest mb-8">
+        <section className="max-w-7xl mx-auto min-h-[68vh] md:min-h-[80vh] flex flex-col justify-center relative text-center">
+          <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-lime-500/60 uppercase tracking-widest mb-6 md:mb-8">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 bg-lime-500 rounded-full animate-pulse" />
               System Online
@@ -306,7 +306,7 @@ const App: React.FC = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-6xl md:text-[100px] font-jakarta font-extrabold tracking-tighter mb-10 leading-[0.9] text-glow"
+            className="text-5xl sm:text-6xl md:text-[100px] font-jakarta font-extrabold tracking-tighter mb-8 md:mb-10 leading-[0.92] text-glow"
           >
             Outbound GTM Architecture <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-emerald-400 to-lime-500">
@@ -318,7 +318,7 @@ const App: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-400 mb-14 leading-relaxed font-medium"
+            className="max-w-2xl mx-auto text-base sm:text-lg md:text-2xl text-gray-400 mb-10 md:mb-14 leading-relaxed font-medium"
           >
             From ICP definition to tooling and workflows, we design outbound systems teams can actually run.
           </motion.p>
@@ -327,13 +327,13 @@ const App: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-col items-center justify-center gap-8"
+            className="flex flex-col items-center justify-center gap-6 md:gap-8"
           >
             <a
               href={CAL_LINK}
               target="_blank"
               rel="noreferrer"
-              className="group relative px-14 py-6 bg-lime-500 text-black font-black text-lg rounded-2xl hover:bg-white transition-all inline-flex items-center gap-4 shadow-[0_20px_50px_rgba(132,204,22,0.3)] hover:scale-110 active:scale-95 border-beam"
+              className="group relative px-9 sm:px-12 md:px-14 py-4 sm:py-5 md:py-6 bg-lime-500 text-black font-black text-base sm:text-lg rounded-2xl hover:bg-white transition-all inline-flex items-center justify-center gap-4 shadow-[0_20px_50px_rgba(132,204,22,0.3)] hover:scale-110 active:scale-95 border-beam w-full sm:w-auto"
             >
               Book a Free GTM Audit
               <ArrowRight
@@ -346,53 +346,53 @@ const App: React.FC = () => {
         </section>
 
         {/* STATS MARQUEE */}
-        <section className="w-screen relative left-[50%] -translate-x-[50%] border-y border-white/10 bg-white/5 py-4 overflow-hidden mb-32">
+        <section className="w-screen relative left-[50%] -translate-x-[50%] border-y border-white/10 bg-white/5 py-3 md:py-4 overflow-hidden mb-16 md:mb-32">
           <div className="marquee">
-            <div className="marquee__track font-mono text-sm text-gray-400">
+            <div className="marquee__track font-mono text-xs sm:text-sm text-gray-400">
               <div className="marquee__item">
                 <span className="flex items-center gap-2">
                   <Zap size={14} className="text-lime-500" /> +73% BOOKING RATE
                 </span>
-                <span className="mx-6 text-white/20">///</span>
+                <span className="mx-5 md:mx-6 text-white/20">///</span>
                 <span className="flex items-center gap-2">
                   <Activity size={14} className="text-lime-500" /> 100% DELIVERABILITY
                 </span>
-                <span className="mx-6 text-white/20">///</span>
+                <span className="mx-5 md:mx-6 text-white/20">///</span>
                 <span className="flex items-center gap-2">
                   <Cpu size={14} className="text-lime-500" /> -85% MANUAL WORK
                 </span>
-                <span className="mx-6 text-white/20">///</span>
+                <span className="mx-5 md:mx-6 text-white/20">///</span>
               </div>
 
               <div className="marquee__item" aria-hidden="true">
                 <span className="flex items-center gap-2">
                   <Zap size={14} className="text-lime-500" /> +73% BOOKING RATE
                 </span>
-                <span className="mx-6 text-white/20">///</span>
+                <span className="mx-5 md:mx-6 text-white/20">///</span>
                 <span className="flex items-center gap-2">
                   <Activity size={14} className="text-lime-500" /> 100% DELIVERABILITY
                 </span>
-                <span className="mx-6 text-white/20">///</span>
+                <span className="mx-5 md:mx-6 text-white/20">///</span>
                 <span className="flex items-center gap-2">
                   <Cpu size={14} className="text-lime-500" /> -85% MANUAL WORK
                 </span>
-                <span className="mx-6 text-white/20">///</span>
+                <span className="mx-5 md:mx-6 text-white/20">///</span>
               </div>
             </div>
           </div>
         </section>
 
         {/* SERVICES */}
-        <section id="services" className="max-w-7xl mx-auto py-24 mb-24">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+        <section id="services" className="max-w-7xl mx-auto py-16 md:py-24 mb-16 md:mb-24">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 md:mb-20 gap-8">
             <div className="max-w-xl">
               <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
                 What we do
               </div>
-              <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-8">
+              <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-6 md:mb-8">
                 Architecting Growth
               </h2>
-              <p className="text-gray-400 text-lg leading-relaxed">
+              <p className="text-gray-400 text-base md:text-lg leading-relaxed">
                 We build the infrastructure, workflows, and operating cadence behind high-output outbound. Clean data, clean
                 execution, measurable outcomes.
               </p>
@@ -400,7 +400,7 @@ const App: React.FC = () => {
             <div className="hidden md:block h-px flex-1 bg-gradient-to-r from-white/10 to-transparent mx-12 mb-8" />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-8 md:gap-10">
             <ServiceCard
               icon={Target}
               title="ICP & Targeting"
@@ -420,20 +420,20 @@ const App: React.FC = () => {
         </section>
 
         {/* PROCESS */}
-        <section id="process" className="max-w-5xl mx-auto py-24 mb-24 relative">
-          <div className="text-center mb-16">
+        <section id="process" className="max-w-5xl mx-auto py-16 md:py-24 mb-16 md:mb-24 relative">
+          <div className="text-center mb-12 md:mb-16">
             <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
               Methodology
             </div>
-            <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-6">
+            <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-5 md:mb-6">
               The Vector Blueprint
             </h2>
-            <p className="text-gray-400 text-lg">
+            <p className="text-gray-400 text-base md:text-lg">
               A commitment to operational maturity, built around clarity, repeatability, and ownership.
             </p>
           </div>
 
-          <div className="space-y-10">
+          <div className="space-y-8 md:space-y-10">
             <ProcessCard
               step="01"
               title="Audit"
@@ -485,8 +485,8 @@ const App: React.FC = () => {
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="max-w-4xl mx-auto py-24 mb-40">
-          <div className="text-center mb-16">
+        <section id="faq" className="max-w-4xl mx-auto py-16 md:py-24 mb-20 md:mb-40">
+          <div className="text-center mb-10 md:mb-16">
             <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
               Clarifications
             </div>
@@ -495,7 +495,7 @@ const App: React.FC = () => {
             </h2>
           </div>
 
-          <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[40px] px-10 py-6 shadow-2xl relative overflow-hidden">
+          <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[32px] md:rounded-[40px] px-6 md:px-10 py-4 md:py-6 shadow-2xl relative overflow-hidden">
             <CornerBrackets />
             <div className="z-10 relative">
               <FAQItem
@@ -523,16 +523,16 @@ const App: React.FC = () => {
         </section>
 
         {/* FINAL CTA */}
-        <section className="max-w-7xl mx-auto py-24 mb-48">
-          <div className="relative group p-[2px] rounded-[48px] overflow-hidden">
+        <section className="max-w-7xl mx-auto py-16 md:py-24 mb-24 md:mb-48">
+          <div className="relative group p-[2px] rounded-[40px] md:rounded-[48px] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-lime-500 via-emerald-500 to-blue-500 animate-gradient-move opacity-50 group-hover:opacity-100 transition-opacity" />
-            <div className="relative bg-[#02040a] rounded-[46px] py-32 px-10 text-center flex flex-col items-center overflow-hidden">
+            <div className="relative bg-[#02040a] rounded-[38px] md:rounded-[46px] py-16 md:py-32 px-6 md:px-10 text-center flex flex-col items-center overflow-hidden">
               <CornerBrackets />
               <div className="z-10 relative">
-                <h2 className="text-5xl md:text-8xl font-jakarta font-black mb-10 tracking-tighter leading-[0.9]">
+                <h2 className="text-4xl md:text-8xl font-jakarta font-black mb-7 md:mb-10 tracking-tighter leading-[0.95]">
                   Ready to Upgrade?
                 </h2>
-                <p className="text-2xl text-gray-400 mb-16 max-w-2xl font-medium">
+                <p className="text-lg md:text-2xl text-gray-400 mb-10 md:mb-16 max-w-2xl font-medium">
                   Stop battling friction. Start deploying architecture. Secure your technical audit today.
                 </p>
 
@@ -541,7 +541,7 @@ const App: React.FC = () => {
                     href={CAL_LINK}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative px-16 py-7 bg-lime-500 text-black font-black text-2xl rounded-2xl hover:bg-white transition-all shadow-[0_25px_60px_rgba(132,204,22,0.4)] hover:scale-110 active:scale-95 border-beam inline-flex items-center justify-center"
+                    className="group relative px-10 sm:px-12 md:px-16 py-4 sm:py-5 md:py-7 bg-lime-500 text-black font-black text-lg md:text-2xl rounded-2xl hover:bg-white transition-all shadow-[0_25px_60px_rgba(132,204,22,0.4)] hover:scale-110 active:scale-95 border-beam inline-flex items-center justify-center w-full sm:w-auto"
                   >
                     Book a Free GTM Audit
                     <ArrowRight
@@ -558,8 +558,8 @@ const App: React.FC = () => {
       </main>
 
       {/* FOOTER */}
-      <footer className="relative z-10 py-16 px-6 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+      <footer className="relative z-10 py-12 md:py-16 px-6 border-t border-white/5 bg-black">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10 md:gap-12">
           <div className="flex items-center gap-4">
             <img src={logo} alt="GTM Vector" className="h-10 md:h-12" />
           </div>
