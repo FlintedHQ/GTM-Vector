@@ -1,19 +1,47 @@
-/* Marquee animation used by App.tsx */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   GLOBAL RESETS
+========================================================= */
+
+html,
+body {
+  background-color: #050505;
+  color: white;
+  scroll-behavior: smooth;
+}
+
+/* =========================================================
+   MARQUEE / STATS TICKER (used by App.tsx)
+   Smooth, continuous right → left scroll
+========================================================= */
+
 .marquee {
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .marquee__track {
-  display: inline-flex;
-  white-space: nowrap;
+  display: flex;
+  width: max-content;
   will-change: transform;
-  animation: marquee 22s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 
-.marquee__item {
+.marquee__content {
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
+  gap: 12px;
+  padding-right: 48px;
+}
+
+/* Duplicate content creates seamless loop */
+.marquee__content > * {
+  margin-right: 2rem;
 }
 
 @keyframes marquee {
@@ -25,7 +53,25 @@
   }
 }
 
-/* Make the track long enough to scroll smoothly */
-.marquee__track > * {
-  margin-right: 2rem;
+/* Optional: pause on hover (nice UX, remove if you want raw motion) */
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+/* =========================================================
+   OPTIONAL: GRADIENT BORDER ANIMATION (used in final CTA)
+========================================================= */
+
+@keyframes gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-gradient-move {
+  background-size: 200% 200%;
+  animation: gradient-move 8s linear infinite;
 }
