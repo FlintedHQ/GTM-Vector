@@ -6,7 +6,7 @@ import {
   Cpu,
 } from "lucide-react";
 
-import logo from "./src/assets/gtm-vector-logo.png";
+import logo from "./assets/gtm-vector-logo.png";
 
 const CAL_LINK = "https://cal.com/dino-lukovac-7ap2jt/freegtmaudit";
 
