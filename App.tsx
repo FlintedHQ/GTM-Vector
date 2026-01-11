@@ -23,7 +23,7 @@ const CAL_LINK = "https://cal.com/dino-lukovac-7ap2jt/freegtmaudit";
 
 // Use a safe hosted logo so Netlify build never fails.
 // Replace later with a real local asset once you upload an actual PNG.
-const LOGO_URL = "https://i.ibb.co/7n64Kz0/image_0.png";
+import logo from "./assets/gtm-vector-logo.png";
 
 const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
   const [displayedText, setDisplayedText] = useState(text);
