@@ -1,102 +1,302 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
+  ShieldCheck,
   Zap,
-  Activity,
+  ChevronDown,
+  Target,
   Cpu,
+  Workflow,
+  Layers,
+  Search,
+  Activity,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-import logo from "./assets/gtm-vector-logo.png";
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 const CAL_LINK = "https://cal.com/dino-lukovac-7ap2jt/freegtmaudit";
 
-const Navbar = () => {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 bg-black/70 backdrop-blur-md border-b border-white/5">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <a href="#" className="flex items-center gap-3">
-          <img
-            src={logo}
-            alt="GTM Vector"
-            className="h-9 md:h-10 w-auto"
-            loading="eager"
-          />
+// Use a safe hosted logo so Netlify build never fails.
+// Replace later with a real local asset once you upload an actual PNG.
+const LOGO_URL = "https://i.ibb.co/7n64Kz0/image_0.png";
+
+const ScrambleText = ({ text, className }: { text: string; className?: string }) => {
+  const [displayedText, setDisplayedText] = useState(text);
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+
+  useEffect(() => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(() =>
+        text
+          .split("")
+          .map((letter, index) => {
+            if (index < iteration) return letter;
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+      if (iteration >= text.length) clearInterval(interval);
+      iteration += 1 / 3;
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <span className={className}>{displayedText}</span>;
+};
+
+const CornerBrackets = () => (
+  <>
+    <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-lime-500/50" />
+    <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-lime-500/50" />
+    <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-lime-500/50" />
+    <div className="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-lime-500/50" />
+  </>
+);
+
+const Navbar = () => (
+  <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 bg-black/80 backdrop-blur-md border-b border-white/5">
+    <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="#" className="flex items-center gap-3 group">
+        <img src={LOGO_URL} alt="GTM Vector" className="h-8 md:h-10" />
+      </a>
+
+      <div className="hidden md:flex items-center gap-10 text-xs font-bold uppercase tracking-widest text-gray-500">
+        <a href="#services" className="hover:text-lime-500 transition-colors">
+          Services
         </a>
-
-        <div className="hidden md:flex items-center gap-10 text-xs font-bold uppercase tracking-widest text-gray-500">
-          <a href="#services" className="hover:text-lime-500 transition-colors">Services</a>
-          <a href="#process" className="hover:text-lime-500 transition-colors">Process</a>
-          <a href="#faq" className="hover:text-lime-500 transition-colors">FAQ</a>
-        </div>
-
-        {/* removed INIT_AUDIT button */}
-        <div className="w-[1px] md:w-auto" />
+        <a href="#process" className="hover:text-lime-500 transition-colors">
+          Process
+        </a>
+        <a href="#faq" className="hover:text-lime-500 transition-colors">
+          FAQ
+        </a>
       </div>
-    </nav>
-  );
+
+      {/* Removed INIT_AUDIT button as requested */}
+      <div className="w-[1px] h-8 bg-white/10 hidden md:block" />
+    </div>
+  </nav>
+);
+
+const ParticleDrift = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let particles: {
+      x: number;
+      y: number;
+      size: number;
+      speedX: number;
+      speedY: number;
+      opacity: number;
+    }[] = [];
+
+    const particleCount = 50;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    const createParticles = () => {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 1.5 + 0.2,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          opacity: Math.random() * 0.3 + 0.05,
+        });
+      }
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.fillStyle = `rgba(132, 204, 22, ${p.opacity})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    };
+
+    resize();
+    createParticles();
+    animate();
+
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
 };
 
-const Marquee = () => {
-  // Two identical tracks to make the loop seamless
-  const items = [
-    { icon: Zap, text: "+73% BOOKING RATE" },
-    { icon: Activity, text: "100% DELIVERABILITY" },
-    { icon: Cpu, text: "-85% MANUAL WORK" },
-  ];
+const ServiceCard = ({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: any;
+  title: string;
+  description: string;
+}) => (
+  <div className="glass-card p-10 rounded-[32px] group relative overflow-hidden flex flex-col items-start gap-5 border border-white/5 hover:border-lime-500/30 transition-colors">
+    <CornerBrackets />
+    <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:bg-lime-500 group-hover:text-black group-hover:border-lime-500 transition-all duration-500 shadow-inner z-10 relative">
+      <Icon size={28} />
+    </div>
+    <h3 className="text-2xl font-bold group-hover:text-lime-500 transition-colors tracking-tight z-10 relative">
+      {title}
+    </h3>
+    <p className="text-gray-400 leading-relaxed font-medium z-10 relative">{description}</p>
+  </div>
+);
+
+const FAQItem = ({ question, answer }: { question: string; answer: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section className="w-screen relative left-[50%] -translate-x-[50%] border-y border-white/10 bg-white/5 py-4 overflow-hidden">
-      <div className="marquee">
-        <div className="marquee__track">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <React.Fragment key={`a-${i}`}>
-              {items.map((it, j) => {
-                const Icon = it.icon;
-                return (
-                  <span className="marquee__item" key={`a-${i}-${j}`}>
-                    <span className="flex items-center gap-2 font-mono text-sm text-gray-300">
-                      <Icon size={14} className="text-lime-500" />
-                      {it.text}
-                    </span>
-                    <span className="mx-6 text-white/20">///</span>
-                  </span>
-                );
-              })}
-            </React.Fragment>
-          ))}
+    <div className="border-b border-white/5 last:border-0 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full py-7 flex items-center justify-between text-left group transition-all"
+      >
+        <span
+          className={cn(
+            "text-lg font-bold transition-all",
+            isOpen ? "text-lime-500 tracking-wide" : "text-gray-300"
+          )}
+        >
+          {question}
+        </span>
+        <div
+          className={cn(
+            "p-2 rounded-full border transition-all duration-500",
+            isOpen
+              ? "border-lime-500 rotate-180 bg-lime-500 text-black"
+              : "border-white/10 text-gray-500"
+          )}
+        >
+          <ChevronDown size={18} />
         </div>
+      </button>
 
-        <div className="marquee__track" aria-hidden="true">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <React.Fragment key={`b-${i}`}>
-              {items.map((it, j) => {
-                const Icon = it.icon;
-                return (
-                  <span className="marquee__item" key={`b-${i}-${j}`}>
-                    <span className="flex items-center gap-2 font-mono text-sm text-gray-300">
-                      <Icon size={14} className="text-lime-500" />
-                      {it.text}
-                    </span>
-                    <span className="mx-6 text-white/20">///</span>
-                  </span>
-                );
-              })}
-            </React.Fragment>
-          ))}
-        </div>
+      <div
+        className={cn(
+          "transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]",
+          isOpen ? "max-h-96 pb-8 opacity-100" : "max-h-0 opacity-0"
+        )}
+      >
+        <p className="text-gray-400 leading-relaxed font-medium pl-2 border-l-2 border-lime-500/20">
+          {answer}
+        </p>
       </div>
-    </section>
+    </div>
   );
 };
+
+const ProcessCard = ({
+  step,
+  title,
+  duration,
+  icon: Icon,
+  intro,
+  bullets,
+  output,
+}: {
+  step: string;
+  title: string;
+  duration: string;
+  icon: any;
+  intro: string;
+  bullets: string[];
+  output?: string;
+}) => (
+  <div className="glass-card flex-1 p-8 rounded-3xl border border-white/10 relative overflow-hidden">
+    <CornerBrackets />
+    <div className="flex items-start justify-between gap-6 z-10 relative">
+      <div className="flex items-start gap-5">
+        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300">
+          <Icon size={22} />
+        </div>
+        <div>
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-2xl bg-lime-500 text-black font-black flex items-center justify-center">
+              {step}
+            </span>
+            <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
+          </div>
+          <p className="text-gray-400 mt-3 leading-relaxed font-medium max-w-2xl">{intro}</p>
+        </div>
+      </div>
+
+      <div className="text-[11px] font-black uppercase tracking-widest text-lime-400 whitespace-nowrap mt-2">
+        {duration}
+      </div>
+    </div>
+
+    <ul className="mt-6 space-y-3 text-gray-300/90 font-medium z-10 relative">
+      {bullets.map((b, i) => (
+        <li key={i} className="flex items-start gap-3">
+          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-lime-500/70 shrink-0" />
+          <span className="leading-relaxed">{b}</span>
+        </li>
+      ))}
+    </ul>
+
+    {output && (
+      <div className="mt-6 text-gray-400 font-medium z-10 relative">
+        <span className="text-gray-300 font-bold">Output:</span> {output}
+      </div>
+    )}
+  </div>
+);
 
 const App: React.FC = () => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden">
+    <div className="min-h-screen relative animated-bg selection:bg-lime-500 selection:text-black bg-[#050505] text-white font-sans overflow-x-hidden">
+      <div className="noise-overlay" />
+      <ParticleDrift />
       <Navbar />
 
-      <main className="relative z-10 pt-28 px-6">
+      <div className="fixed inset-0 shimmer-grid opacity-30 pointer-events-none z-0" />
+      <div className="fixed top-0 left-1/4 w-[800px] h-[800px] bg-blue-600/5 blur-[160px] rounded-full pointer-events-none beam-mask z-0 mix-blend-screen" />
+      <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-lime-600/5 blur-[140px] rounded-full pointer-events-none beam-mask z-0 mix-blend-screen" />
+
+      <main className="relative z-10 pt-32 px-6">
         {/* HERO */}
-        <section className="max-w-7xl mx-auto min-h-[75vh] flex flex-col justify-center text-center">
+        <section className="max-w-7xl mx-auto min-h-[80vh] flex flex-col justify-center relative text-center">
           <div className="flex items-center justify-center gap-4 text-[10px] font-mono text-lime-500/60 uppercase tracking-widest mb-8">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 bg-lime-500 rounded-full animate-pulse" />
@@ -106,80 +306,130 @@ const App: React.FC = () => {
             <span>v2.4.0 Deployment</span>
           </div>
 
-          <h1 className="text-5xl md:text-[92px] font-extrabold tracking-tight leading-[0.95] mb-10">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-6xl md:text-[100px] font-jakarta font-extrabold tracking-tighter mb-10 leading-[0.9] text-glow"
+          >
             Outbound GTM Architecture <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-emerald-400 to-lime-500">
-              Built to Scale
+              <ScrambleText text="BUILT TO SCALE" />
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-400 mb-12 leading-relaxed">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="max-w-2xl mx-auto text-lg md:text-2xl text-gray-400 mb-14 leading-relaxed font-medium"
+          >
             From ICP definition to tooling and workflows, we design outbound systems teams can actually run.
-          </p>
+          </motion.p>
 
-          <div className="flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex flex-col items-center justify-center gap-8"
+          >
             <a
               href={CAL_LINK}
               target="_blank"
               rel="noreferrer"
-              className="group inline-flex items-center gap-3 px-10 py-5 bg-lime-500 text-black font-extrabold text-lg rounded-2xl hover:bg-white transition-all shadow-[0_20px_50px_rgba(132,204,22,0.25)] hover:scale-105 active:scale-95"
+              className="group relative px-14 py-6 bg-lime-500 text-black font-black text-lg rounded-2xl hover:bg-white transition-all inline-flex items-center gap-4 shadow-[0_20px_50px_rgba(132,204,22,0.3)] hover:scale-110 active:scale-95 border-beam"
             >
               Book a Free GTM Audit
-              <ArrowRight size={20} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+              <ArrowRight
+                size={22}
+                strokeWidth={3}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all"
+              />
             </a>
+          </motion.div>
+        </section>
+
+        {/* STATS MARQUEE (single line only) */}
+        <section className="w-screen relative left-[50%] -translate-x-[50%] border-y border-white/10 bg-white/5 py-4 overflow-hidden mb-32">
+          <div className="marquee">
+            <div className="marquee__track font-mono text-sm text-gray-400">
+              {/* Duplicate content once inside the track for seamless loop */}
+              <div className="marquee__item">
+                <span className="flex items-center gap-2">
+                  <Zap size={14} className="text-lime-500" /> +73% BOOKING RATE
+                </span>
+                <span className="mx-6 text-white/20">///</span>
+                <span className="flex items-center gap-2">
+                  <Activity size={14} className="text-lime-500" /> 100% DELIVERABILITY
+                </span>
+                <span className="mx-6 text-white/20">///</span>
+                <span className="flex items-center gap-2">
+                  <Cpu size={14} className="text-lime-500" /> -85% MANUAL WORK
+                </span>
+                <span className="mx-6 text-white/20">///</span>
+              </div>
+
+              <div className="marquee__item" aria-hidden="true">
+                <span className="flex items-center gap-2">
+                  <Zap size={14} className="text-lime-500" /> +73% BOOKING RATE
+                </span>
+                <span className="mx-6 text-white/20">///</span>
+                <span className="flex items-center gap-2">
+                  <Activity size={14} className="text-lime-500" /> 100% DELIVERABILITY
+                </span>
+                <span className="mx-6 text-white/20">///</span>
+                <span className="flex items-center gap-2">
+                  <Cpu size={14} className="text-lime-500" /> -85% MANUAL WORK
+                </span>
+                <span className="mx-6 text-white/20">///</span>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* MOVING TICKER */}
-        <div className="mb-24">
-          <Marquee />
-        </div>
-
         {/* SERVICES */}
-        <section id="services" className="max-w-7xl mx-auto py-10 mb-28">
-          <div className="mb-14 text-center md:text-left">
-            <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
-              What we do
+        <section id="services" className="max-w-7xl mx-auto py-24 mb-24">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+            <div className="max-w-xl">
+              <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
+                What we do
+              </div>
+              <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-8">
+                Architecting Growth
+              </h2>
+              <p className="text-gray-400 text-lg leading-relaxed">
+                We build the infrastructure, workflows, and operating cadence behind high-output outbound. Clean data, clean
+                execution, measurable outcomes.
+              </p>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-              Architecting Growth
-            </h2>
-            <p className="text-gray-400 text-lg leading-relaxed max-w-3xl">
-              We build the underlying system so outbound is predictable, measurable, and scalable.
-            </p>
+            <div className="hidden md:block h-px flex-1 bg-gradient-to-r from-white/10 to-transparent mx-12 mb-8" />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-9 rounded-3xl border border-white/10 bg-white/5">
-              <h3 className="text-2xl font-bold mb-3">ICP and Targeting</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Clear buyer definition, targeting logic, and list-building rules that stop wasted outreach and focus volume where it converts.
-              </p>
-            </div>
-
-            <div className="p-9 rounded-3xl border border-white/10 bg-white/5">
-              <h3 className="text-2xl font-bold mb-3">Deliverability and Infrastructure</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Domains, DNS, warmup, and sending practices engineered for consistent inbox placement and stable reputation over time.
-              </p>
-            </div>
-
-            <div className="p-9 rounded-3xl border border-white/10 bg-white/5">
-              <h3 className="text-2xl font-bold mb-3">Automation and RevOps</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Tooling wired together with reliable data flow, clean CRM structure, and automated workflows so the engine runs daily without chaos.
-              </p>
-            </div>
+          <div className="grid md:grid-cols-3 gap-10">
+            <ServiceCard
+              icon={Target}
+              title="ICP & Targeting"
+              description="Persona definition, account selection logic, and a targeting model that stays consistent as you scale volume."
+            />
+            <ServiceCard
+              icon={ShieldCheck}
+              title="Infrastructure"
+              description="Domains, DNS alignment, warmup strategy, and governance that keeps deliverability stable as output rises."
+            />
+            <ServiceCard
+              icon={Workflow}
+              title="Automation & RevOps"
+              description="n8n workflows wired into your CRM so lead flow, routing, hygiene, and reporting run without manual work."
+            />
           </div>
         </section>
 
         {/* PROCESS */}
-        <section id="process" className="max-w-5xl mx-auto py-10 mb-28">
-          <div className="text-center mb-14">
+        <section id="process" className="max-w-5xl mx-auto py-24 mb-24 relative">
+          <div className="text-center mb-16">
             <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
               Methodology
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+            <h2 className="text-4xl md:text-6xl font-jakarta font-bold tracking-tight mb-6">
               The Vector Blueprint
             </h2>
             <p className="text-gray-400 text-lg">
@@ -188,129 +438,165 @@ const App: React.FC = () => {
           </div>
 
           <div className="space-y-10">
-            <div className="p-8 rounded-3xl border border-white/10 bg-white/5">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-10 h-10 rounded-2xl bg-lime-500 text-black font-extrabold flex items-center justify-center">
-                  01
-                </div>
-                <h3 className="text-2xl font-bold">Audit</h3>
-                <span className="text-xs font-bold uppercase tracking-widest text-lime-400 ml-auto">
-                  48h
-                </span>
-              </div>
-              <p className="text-gray-300 font-semibold mb-3">
-                A deep technical and operational teardown of your current outbound motion.
-              </p>
-              <ul className="text-gray-400 leading-relaxed list-disc pl-5 space-y-2">
-                <li>ICP definition and targeting logic, who you are hitting versus who you should</li>
-                <li>Deliverability and inbox health, domains, DNS, warmup, sender reputation</li>
-                <li>Messaging structure and sequencing, what is breaking and what is underperforming</li>
-                <li>Tooling and data flow across CRM, enrichment, automation, and outbound platforms</li>
-              </ul>
-              <p className="text-gray-400 leading-relaxed mt-4">
-                Output: a prioritized roadmap outlining gaps, risks, and the exact fixes required, split into quick wins and structural changes.
-              </p>
-            </div>
+            <ProcessCard
+              step="01"
+              title="Audit"
+              duration="48H"
+              icon={Search}
+              intro="A deep technical and operational teardown of your current outbound motion."
+              bullets={[
+                "ICP definition and targeting logic, who you are hitting versus who you should",
+                "Deliverability and inbox health, domains, DNS, warmup, sender reputation",
+                "Messaging structure and sequencing, what is breaking and what is underperforming",
+                "Tooling and data flow across CRM, enrichment, automation, and outbound platforms",
+              ]}
+              output="A prioritized roadmap outlining gaps, risks, and the exact fixes required, split into quick wins and structural changes."
+            />
 
-            <div className="p-8 rounded-3xl border border-white/10 bg-white/5">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-10 h-10 rounded-2xl bg-lime-500 text-black font-extrabold flex items-center justify-center">
-                  02
-                </div>
-                <h3 className="text-2xl font-bold">Build</h3>
-                <span className="text-xs font-bold uppercase tracking-widest text-lime-400 ml-auto">
-                  2 to 4 weeks
-                </span>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                Infrastructure, workflows, and tooling implementation. Everything is wired, tested, and documented so it runs reliably at scale.
-              </p>
-            </div>
+            <ProcessCard
+              step="02"
+              title="Build"
+              duration="2 TO 4 WEEKS"
+              icon={Cpu}
+              intro="Infrastructure plus workflow engineering that turns strategy into a system your team can run every day."
+              bullets={[
+                "Deliverability stack setup: domains, SPF, DKIM, DMARC, routing, warmup strategy, sending policy",
+                "Data layer: sourcing, enrichment logic, validation rules, dedupe, and segmentation that stays clean at scale",
+                "Outbound tooling: sequencing, personalization logic, handoffs, and tracking wired end to end",
+                "CRM operations: lifecycle stages, ownership rules, pipeline taxonomy, and reporting that matches reality",
+                "Automation: n8n workflows for list intake, routing, hygiene, alerts, and feedback loops from replies to CRM fields",
+                "Stress testing: volume tests, inbox placement checks, and failure mode review before you go live",
+              ]}
+              output="A fully working outbound system with documented flows, tracked metrics, and a stable operating baseline."
+            />
 
-            <div className="p-8 rounded-3xl border border-white/10 bg-white/5">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="w-10 h-10 rounded-2xl bg-lime-500 text-black font-extrabold flex items-center justify-center">
-                  03
-                </div>
-                <h3 className="text-2xl font-bold">Handover</h3>
-                <span className="text-xs font-bold uppercase tracking-widest text-lime-400 ml-auto">
-                  Docs and training
-                </span>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                You own it. SOPs, playbooks, onboarding, and operating cadence so the engine keeps running without constant founder involvement.
-              </p>
-            </div>
+            <ProcessCard
+              step="03"
+              title="Handover"
+              duration="DOCS AND TRAINING"
+              icon={Layers}
+              intro="You own it. We transfer the full playbook so the engine runs without constant founder involvement."
+              bullets={[
+                "SOPs for list building, QA, launching sequences, and handling replies",
+                "Playbooks for targeting changes, new segments, and iterative messaging improvements",
+                "CRM hygiene routines: weekly checks, stuck stage rules, and dedupe guardrails",
+                "Reporting cadence: what to review daily, weekly, and monthly, and how to act on signals",
+                "Team training: walkthroughs, troubleshooting guide, and a checklist to onboard new operators fast",
+              ]}
+              output="An operating cadence and documentation set that keeps quality high while volume increases."
+            />
+          </div>
+        </section>
+
+        {/* SYSTEM LINE */}
+        <section className="max-w-7xl mx-auto py-24 mb-40">
+          <div className="flex flex-col items-center text-center relative">
+            <CornerBrackets />
+            <p className="text-2xl text-gray-400 max-w-4xl leading-[1.6] font-medium px-4 z-10 relative">
+              <span className="text-white font-black border-b-2 border-lime-500/30">n8n is the nervous system.</span>{" "}
+              <span className="text-lime-500 font-black italic">CRM is the source of truth.</span>{" "}
+              Everything else is a modular endpoint we optimize for output.
+            </p>
           </div>
         </section>
 
         {/* FAQ */}
-        <section id="faq" className="max-w-4xl mx-auto py-10 mb-28">
-          <div className="text-center mb-10">
+        <section id="faq" className="max-w-4xl mx-auto py-24 mb-40">
+          <div className="text-center mb-16">
             <div className="text-lime-500 text-xs font-black uppercase tracking-[0.3em] mb-4">
               Clarifications
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-jakarta font-bold tracking-tight">
               FAQ
             </h2>
           </div>
 
-          <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 space-y-8">
-            <div>
-              <h3 className="text-xl font-bold mb-2">Who is this for?</h3>
-              <p className="text-gray-400 leading-relaxed">
-                B2B SaaS and high-ticket service teams that want a repeatable outbound engine and clean CRM operations.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-2">What happens in the audit?</h3>
-              <p className="text-gray-400 leading-relaxed">
-                We review your current setup and return a prioritized roadmap covering infrastructure, tooling, process, and quick wins.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-2">Do you run campaigns or hand it over?</h3>
-              <p className="text-gray-400 leading-relaxed">
-                We build and hand over the system with documentation and training. If you need ongoing support later, we can discuss it.
-              </p>
+          <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[40px] px-10 py-6 shadow-2xl relative overflow-hidden">
+            <CornerBrackets />
+            <div className="z-10 relative">
+              <FAQItem
+                question="Who is this for?"
+                answer="B2B SaaS and high-ticket service teams that want a repeatable outbound engine and clean CRM operations."
+              />
+              <FAQItem
+                question="What happens in the audit?"
+                answer="We review your current setup and return a prioritized roadmap covering infrastructure, tooling, process, and quick wins."
+              />
+              <FAQItem
+                question="Do you run campaigns or hand it over?"
+                answer="We build and hand over the system with documentation and training. If you need ongoing support later, we can discuss it."
+              />
+              <FAQItem
+                question="How long does setup take?"
+                answer="Most builds land in 2 to 4 weeks depending on domain work, tool complexity, and how much needs to be rebuilt versus refined."
+              />
+              <FAQItem
+                question="What tools do you work with?"
+                answer="n8n, HubSpot, Clay, Apollo, Instantly, and supporting deliverability tooling. We adapt to your stack if it is sound."
+              />
             </div>
           </div>
         </section>
 
         {/* FINAL CTA */}
-        <section className="max-w-7xl mx-auto py-16 mb-24">
-          <div className="rounded-[40px] border border-white/10 bg-white/5 p-12 text-center">
-            <h2 className="text-4xl md:text-6xl font-extrabold mb-5">Ready to Upgrade?</h2>
-            <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
-              Stop battling friction. Start deploying architecture. Secure your technical audit today.
-            </p>
+        <section className="max-w-7xl mx-auto py-24 mb-48">
+          <div className="relative group p-[2px] rounded-[48px] overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-lime-500 via-emerald-500 to-blue-500 animate-gradient-move opacity-50 group-hover:opacity-100 transition-opacity" />
+            <div className="relative bg-[#02040a] rounded-[46px] py-32 px-10 text-center flex flex-col items-center overflow-hidden">
+              <CornerBrackets />
+              <div className="z-10 relative">
+                <h2 className="text-5xl md:text-8xl font-jakarta font-black mb-10 tracking-tighter leading-[0.9]">
+                  Ready to Upgrade?
+                </h2>
+                <p className="text-2xl text-gray-400 mb-16 max-w-2xl font-medium">
+                  Stop battling friction. Start deploying architecture. Secure your technical audit today.
+                </p>
 
-            {/* button centered */}
-            <div className="flex justify-center">
-              <a
-                href={CAL_LINK}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center px-10 py-5 bg-lime-500 text-black font-extrabold rounded-2xl hover:bg-white transition-all shadow-[0_20px_50px_rgba(132,204,22,0.25)] hover:scale-105 active:scale-95"
-              >
-                Book a Free GTM Audit
-              </a>
+                <div className="flex items-center justify-center">
+                  <a
+                    href={CAL_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group relative px-16 py-7 bg-lime-500 text-black font-black text-2xl rounded-2xl hover:bg-white transition-all shadow-[0_25px_60px_rgba(132,204,22,0.4)] hover:scale-110 active:scale-95 border-beam inline-flex items-center justify-center"
+                  >
+                    Book a Free GTM Audit
+                    <ArrowRight
+                      size={22}
+                      strokeWidth={3}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-0 group-hover:opacity-100 transition-all"
+                    />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-white/5 bg-black py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <img src={logo} alt="GTM Vector" className="h-10 w-auto" />
-          <p className="text-xs font-bold text-gray-600 uppercase tracking-[0.25em]">
+      <footer className="relative z-10 py-16 px-6 border-t border-white/5 bg-black">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="flex items-center gap-4">
+            <img src={LOGO_URL} alt="GTM Vector" className="h-10 md:h-12" />
+          </div>
+
+          <p className="text-xs font-bold text-gray-600 uppercase tracking-[0.3em] text-center">
             © 2025 GTM Vector. All Rights Reserved.
           </p>
         </div>
       </footer>
+
+      {/* Cursor proximity effect */}
+      <div
+        className="fixed w-10 h-10 rounded-full border-2 border-lime-500/20 pointer-events-none z-[9999] transition-transform duration-75 ease-out hidden md:block"
+        style={{ transform: `translate(${mousePos.x - 20}px, ${mousePos.y - 20}px)` }}
+      >
+        <div className="w-1 h-1 bg-lime-500 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_15px_#84cc16]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-lime-500/40" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-lime-500/40" />
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-0.5 bg-lime-500/40" />
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-0.5 bg-lime-500/40" />
+      </div>
     </div>
   );
 };
