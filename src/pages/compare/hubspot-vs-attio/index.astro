@@ -1,0 +1,23 @@
+---
+import SeoPage from "../../../components/SeoPage.astro";
+
+const sections = [
+  { h2: "HubSpot vs Attio in plain English", paragraphs: [
+    "HubSpot is a full CRM suite with marketing + sales workflows. Attio is a modern, flexible CRM that’s great for fast-moving teams that want custom objects and lightweight operations.",
+    "If you need a full suite and deep ecosystem, HubSpot is hard to beat. If you want speed, flexibility, and clean UX, Attio is attractive."
+  ]},
+  { h2: "When HubSpot wins", paragraphs: [
+    "You need mature reporting, lifecycle stages, marketing automation, and a large integrations ecosystem.",
+    "You want one system for CRM + forms + campaigns + pipelines without stitching tools."
+  ]},
+  { h2: "When Attio wins", paragraphs: [
+    "You want a clean CRM that adapts to your process, not the other way around.",
+    "You care about custom data models and a fast workflow for outbound + founder-led sales."
+  ]},
+];
+---
+<SeoPage
+  title="HubSpot vs Attio"
+  description="A practical comparison of HubSpot and Attio: which CRM fits your GTM stage and outbound operating model."
+  sections={sections}
+/>

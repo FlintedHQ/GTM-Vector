@@ -1,0 +1,23 @@
+---
+import SeoPage from "../../../components/SeoPage.astro";
+
+const sections = [
+  { h2: "Apollo vs Clay in plain English", paragraphs: [
+    "Apollo is primarily a database + sequencing workflow for outbound teams. Clay is a data automation layer that can enrich, score, and generate highly tailored inputs at scale.",
+    "If your goal is volume fast, Apollo can get you moving. If your goal is relevance at scale across multiple data sources, Clay usually wins."
+  ]},
+  { h2: "When Apollo is enough", paragraphs: [
+    "You have a tight ICP, simple enrichment needs, and your main constraint is sending volume and basic personalization.",
+    "You need fast list building, simple sequences, and reporting without building a complex workflow."
+  ]},
+  { h2: "When Clay wins", paragraphs: [
+    "You need multi-source enrichment, AI research summaries, scoring, routing, and rule-based segmentation.",
+    "You want to build a repeatable workflow that improves over time, not just blast bigger lists."
+  ]},
+];
+---
+<SeoPage
+  title="Apollo vs Clay"
+  description="A practical comparison of Apollo and Clay for outbound teams: when to use each and how they fit together."
+  sections={sections}
+/>
