@@ -1,0 +1,40 @@
+---
+import SeoPage from "../../components/SeoPage.astro";
+
+const sections = [
+  {
+    h2: "Outbound automation that actually books meetings",
+    paragraphs: [
+      "Most outbound fails for one boring reason: the system isn’t designed to run daily without breaking. Tools are fine. The operating model is usually the problem.",
+      "Outbound automation means you can generate consistent conversations without relying on heroic manual effort: clear ICP rules, reliable lists, clean routing, and sequences that don’t torch deliverability."
+    ]
+  },
+  {
+    h2: "What usually breaks",
+    paragraphs: [
+      "Targeting is too broad: people spam titles instead of building a real ICP with exclusions and signals.",
+      "Personalization is fake: “Saw you do X” copy that’s obviously templated gets ignored and trains inbox providers against you.",
+      "No guardrails: no throttling, no ramping, no monitoring, no QA on lists, and no feedback loop from replies into targeting."
+    ]
+  },
+  {
+    h2: "The GTM Vector approach",
+    paragraphs: [
+      "We build outbound as an end-to-end system: ICP rules, list sourcing, enrichment, segmentation, sequences, and reply handling.",
+      "Automation happens where it’s safe: data, research summaries, prioritization, and routing. Messaging stays sharp, human, and on-brand."
+    ]
+  },
+  {
+    h2: "What you get",
+    paragraphs: [
+      "A working outbound engine your team can run: documented workflows, templates, QA checks, and a weekly cadence.",
+      "If you already have a stack (Apollo, Clay, Instantly, HubSpot, n8n), we plug into it and make it operate like a machine."
+    ]
+  }
+];
+---
+<SeoPage
+  title="Outbound Automation"
+  description="Outbound systems built to scale: ICP rules, list building, segmentation, sequences, routing, and monitoring that produce meetings."
+  sections={sections}
+/>

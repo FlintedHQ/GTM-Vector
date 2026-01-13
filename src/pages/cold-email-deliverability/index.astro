@@ -1,0 +1,42 @@
+---
+import SeoPage from "../../components/SeoPage.astro";
+
+const sections = [
+  {
+    h2: "What cold email deliverability actually means",
+    paragraphs: [
+      "Cold email deliverability is your ability to reach the primary inbox consistently. It’s not open rate. It’s not “we warmed the domain for 2 weeks.” It’s whether inbox providers trust your sending identity enough to place your email where humans will see it.",
+      "If you’re getting clicks but no bookings, or your results swing week to week, deliverability is usually the hidden bottleneck."
+    ]
+  },
+  {
+    h2: "The 5 levers that move inbox placement",
+    paragraphs: [
+      "Authentication: SPF, DKIM, and DMARC need to be correct. This is the minimum. If it’s wrong, you’re playing outbound on hard mode.",
+      "Sending identity: domain age, inbox reputation, and consistent sending patterns matter more than people want to admit.",
+      "List quality: bad targeting and dirty lists create bounces, spam complaints, and low engagement, which train providers to distrust you.",
+      "Content + links: overly salesy language, aggressive formatting, too many links, and tracking setups can tank placement.",
+      "Operational discipline: ramp schedules, segmentation, reply handling, and throttling are what keep you stable once volume increases."
+    ]
+  },
+  {
+    h2: "What a sane deliverability system looks like",
+    paragraphs: [
+      "A real setup is multiple domains, clean authentication, controlled ramping, and clear sending rules by segment. You’re protecting reputation while still getting volume.",
+      "You also track what matters: bounce rate, spam placement checks, reply rates by domain, and early warning signals before your pipeline disappears."
+    ]
+  },
+  {
+    h2: "How GTM Vector helps",
+    paragraphs: [
+      "We audit your current setup, fix what’s broken, and implement a repeatable operating model: domains, inboxes, warmup, sending rules, and monitoring.",
+      "The outcome is predictable inbox placement, stable reply rates, and inbound meetings that don’t vanish the moment you scale."
+    ]
+  }
+];
+---
+<SeoPage
+  title="Cold Email Deliverability"
+  description="A practical deliverability system: authentication, domain setup, sending rules, and monitoring so outbound reliably reaches inboxes."
+  sections={sections}
+/>

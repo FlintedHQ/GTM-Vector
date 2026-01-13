@@ -1,0 +1,93 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CTA from "../components/CTA.astro";
+---
+
+<Layout
+  title="GTM Vector - Outbound GTM Architecture"
+  description="From ICP definition to tooling and workflows, we design outbound systems teams can actually run."
+>
+  <main class="max-w-5xl mx-auto px-8 py-16">
+    <section class="pt-6">
+      <h1 class="text-5xl font-bold tracking-tight">
+        Outbound GTM architecture built to scale.
+      </h1>
+      <p class="text-lg opacity-80 mt-6 max-w-3xl leading-7">
+        GTM Vector helps B2B teams turn outbound into a repeatable system:
+        targeting rules, data workflows, deliverability, tooling, and an operating model your team can run.
+      </p>
+
+      <div class="mt-10">
+        <CTA />
+      </div>
+
+      <div class="mt-10 flex flex-wrap gap-3 text-sm opacity-80">
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1">ICP rules</span>
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Deliverability</span>
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Clay / Apollo</span>
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1">Instantly</span>
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1">HubSpot</span>
+        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1">n8n</span>
+      </div>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="text-2xl font-semibold">Start here</h2>
+      <p class="opacity-80 mt-3 max-w-3xl">
+        These are the highest-intent pages. If you’re already running outbound, one of these will likely be your bottleneck.
+      </p>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/outbound-automation/">
+          <h3 class="text-lg font-semibold">Outbound Automation</h3>
+          <p class="opacity-80 mt-2">ICP rules, list building, segmentation, sequences, routing, monitoring.</p>
+        </a>
+
+        <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/cold-email-deliverability/">
+          <h3 class="text-lg font-semibold">Cold Email Deliverability</h3>
+          <p class="opacity-80 mt-2">Domain setup, inbox placement, warming, and safe sending patterns.</p>
+        </a>
+
+        <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/ai-sdr/">
+          <h3 class="text-lg font-semibold">AI SDR</h3>
+          <p class="opacity-80 mt-2">Use AI upstream without frying deliverability or sounding like a bot.</p>
+        </a>
+
+        <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/compare/">
+          <h3 class="text-lg font-semibold">Compare</h3>
+          <p class="opacity-80 mt-2">High-intent pages that rank and convert.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="text-2xl font-semibold">What you get</h2>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="font-semibold">A working outbound system</h3>
+          <p class="opacity-80 mt-2">Targeting rules, enrichment, segmentation, sequences, and QA checks.</p>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="font-semibold">Docs + handover</h3>
+          <p class="opacity-80 mt-2">Playbooks, templates, and a weekly operating cadence your team follows.</p>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="font-semibold">Stack integration</h3>
+          <p class="opacity-80 mt-2">We plug into what you already use: Apollo, Clay, Instantly, HubSpot, n8n.</p>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h3 class="font-semibold">Meetings as the KPI</h3>
+          <p class="opacity-80 mt-2">We optimize for booked calls, not vanity metrics.</p>
+        </div>
+      </div>
+
+      <div class="mt-14">
+        <CTA headline="Want a quick teardown?" subhead="Send your current setup and I’ll tell you the top 3 fixes to improve meetings fast." />
+      </div>
+    </section>
+  </main>
+</Layout>

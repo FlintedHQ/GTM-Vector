@@ -1,0 +1,37 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CTA from "../../components/CTA.astro";
+---
+
+<Layout title="Glossary" description="Quick definitions for deliverability and outbound terms.">
+  <main class="max-w-5xl mx-auto px-8 py-16">
+    <h1 class="text-5xl font-bold tracking-tight">Glossary</h1>
+    <p class="text-lg opacity-80 mt-5 max-w-3xl">
+      Simple explanations you can send to your team so everyone speaks the same language.
+    </p>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/glossary/spf/">
+        <h2 class="text-lg font-semibold">SPF</h2>
+        <p class="opacity-80 mt-2">What it is, why it matters, and how to set it correctly.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/glossary/dkim/">
+        <h2 class="text-lg font-semibold">DKIM</h2>
+        <p class="opacity-80 mt-2">Email signing, trust, and preventing spoofing.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/glossary/dmarc/">
+        <h2 class="text-lg font-semibold">DMARC</h2>
+        <p class="opacity-80 mt-2">Policies, rollout strategy, and common mistakes.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/glossary/inbox-placement/">
+        <h2 class="text-lg font-semibold">Inbox Placement</h2>
+        <p class="opacity-80 mt-2">What it means and how to improve it predictably.</p>
+      </a>
+    </div>
+
+    <CTA />
+  </main>
+</Layout>

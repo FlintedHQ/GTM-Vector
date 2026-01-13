@@ -1,0 +1,32 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CTA from "../../components/CTA.astro";
+---
+
+<Layout title="Compare" description="Straight comparisons of outbound tools and approaches.">
+  <main class="max-w-5xl mx-auto px-8 py-16">
+    <h1 class="text-5xl font-bold tracking-tight">Compare</h1>
+    <p class="text-lg opacity-80 mt-5 max-w-3xl">
+      High-intent pages that rank because they answer what buyers actually search.
+    </p>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/compare/apollo-vs-clay/">
+        <h2 class="text-lg font-semibold">Apollo vs Clay</h2>
+        <p class="opacity-80 mt-2">When to use each, tradeoffs, and the “best together” setup.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/compare/hubspot-vs-attio/">
+        <h2 class="text-lg font-semibold">HubSpot vs Attio</h2>
+        <p class="opacity-80 mt-2">CRM choice based on motion, complexity, and team maturity.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/compare/cold-email-agency-vs-internal-team/">
+        <h2 class="text-lg font-semibold">Agency vs Internal Team</h2>
+        <p class="opacity-80 mt-2">Speed vs control, cost reality, and long-term compounding.</p>
+      </a>
+    </div>
+
+    <CTA />
+  </main>
+</Layout>
