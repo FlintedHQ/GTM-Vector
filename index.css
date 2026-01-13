@@ -1,0 +1,31 @@
+/* Marquee animation used by App.tsx */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+}
+
+.marquee__track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee 26s linear infinite;
+}
+
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding-right: 3rem;
+}
+
+/* One continuous scroll. We duplicate the content once in App.tsx, so -50% is correct. */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
