@@ -1,0 +1,13 @@
+---
+import Layout from "../layouts/Layout.astro";
+const { title, description } = Astro.props;
+---
+<Layout title={title} description={description}>
+  <main class="max-w-5xl mx-auto px-8 py-20">
+    <h1 class="text-4xl font-bold mb-4">{title}</h1>
+    <p class="opacity-80 mb-10">{description}</p>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-8">
+      <p class="opacity-80">Coming soon.</p>
+    </div>
+  </main>
+</Layout>
