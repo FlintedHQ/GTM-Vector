@@ -1,4 +1,37 @@
 ---
-import ComingSoon from "../../components/ComingSoon.astro";
+import Layout from "../../layouts/Layout.astro";
+import CTA from "../../components/CTA.astro";
 ---
-<ComingSoon title="Guides" description="Practical guides for outbound systems, deliverability, tooling, and automation." />
+
+<Layout title="Guides" description="Practical guides for outbound systems, deliverability, tooling, and automation.">
+  <main class="max-w-5xl mx-auto px-8 py-16">
+    <h1 class="text-5xl font-bold tracking-tight">Guides</h1>
+    <p class="text-lg opacity-80 mt-5 max-w-3xl">
+      Step-by-step breakdowns that turn outbound from chaos into a system.
+    </p>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/outbound-automation/">
+        <h2 class="text-lg font-semibold">Outbound systems</h2>
+        <p class="opacity-80 mt-2">ICP rules, list building, sequences, routing, monitoring.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/cold-email-deliverability/">
+        <h2 class="text-lg font-semibold">Deliverability</h2>
+        <p class="opacity-80 mt-2">Domain setup, warming, inbox placement, safe sending patterns.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/ai-sdr/">
+        <h2 class="text-lg font-semibold">Tooling + AI SDR</h2>
+        <p class="opacity-80 mt-2">Use AI upstream without tanking deliverability or sounding robotic.</p>
+      </a>
+
+      <a class="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10 transition" href="/revops-automation/">
+        <h2 class="text-lg font-semibold">Automation</h2>
+        <p class="opacity-80 mt-2">CRM hygiene, enrichment, routing and workflows that keep pipeline clean.</p>
+      </a>
+    </div>
+
+    <CTA />
+  </main>
+</Layout>
