@@ -1,4 +1,32 @@
 ---
-import ComingSoon from "../../components/ComingSoon.astro";
+import SeoPage from "../../components/SeoPage.astro";
+
+const sections = [
+  {
+    h2: "What an AI SDR actually does",
+    paragraphs: [
+      "An AI SDR is not a chatbot blasting random emails. It’s a system that assists human outbound by enriching data, generating context-aware personalization, and prioritizing leads based on signals.",
+      "When used correctly, AI reduces manual work while increasing relevance. When used incorrectly, it destroys deliverability."
+    ]
+  },
+  {
+    h2: "Where teams go wrong with AI outbound",
+    paragraphs: [
+      "Most teams plug AI directly into messaging without guardrails. This creates generic, over-optimized copy that inbox providers and prospects both ignore.",
+      "Another common mistake is skipping ICP logic. AI can’t fix bad targeting."
+    ]
+  },
+  {
+    h2: "How we use AI safely and profitably",
+    paragraphs: [
+      "AI is used upstream: enrichment, research summaries, personalization inputs, and prioritization. Final messaging stays human.",
+      "The result is higher reply rates, better meetings, and no deliverability damage."
+    ]
+  }
+];
 ---
-<ComingSoon title="AI SDR" description="AI-assisted prospecting and personalization that produces meetings, not spam." />
+<SeoPage
+  title="AI SDR"
+  description="AI-assisted prospecting and personalization that increases meetings without hurting deliverability."
+  sections={sections}
+/>
