@@ -61,7 +61,7 @@ const CornerBrackets = () => (
 const Navbar = () => (
   <nav className="fixed top-0 left-0 right-0 z-50 py-3 md:py-4 px-5 md:px-12 bg-black/80 backdrop-blur-md border-b border-white/5">
     <div className="max-w-7xl mx-auto flex items-center justify-between">
-      <a href="#" className="flex items-center gap-3 group">
+      <a href="/" className="flex items-center gap-3 group">
         <img src={logo} alt="GTM Vector" className="h-8 md:h-10" />
       </a>
 
