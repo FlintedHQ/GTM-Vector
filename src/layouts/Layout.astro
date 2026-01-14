@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-import Nav from "../components/Nav.astro";
 
 const {
   title = "GTM Vector",
@@ -16,11 +15,6 @@ const {
     <meta name="description" content={description} />
   </head>
   <body class="bg-[#050505] text-white">
-    <header class="max-w-5xl mx-auto px-8 py-6 flex items-center justify-between gap-6">
-      <a class="font-bold tracking-tight" href="/">GTM Vector</a>
-      <Nav />
-    </header>
-
     <slot />
   </body>
 </html>
