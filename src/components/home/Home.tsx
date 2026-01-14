@@ -15,46 +15,109 @@ const CAL_LINK = 'https://cal.com/dino-lukovac-7ap2jt/freegtmaudit';
 
 // --- Sub-components ---
 
-const Navbar: React.FC = () => (
-  <nav className="fixed top-0 left-0 right-0 z-[60] bg-black/60 backdrop-blur-2xl border-b border-white/5">
-    <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-12 py-3 md:py-4">
-      {/* Logo */}
-      <a href="/" className="flex items-center gap-3 min-w-0">
-        <img
-          src="/gtm-vector-logo.png"
-          alt="GTM Vector"
-          className="w-9 h-20 md:w-10 md:h-10 object-contain shrink-0"
-        />
-        <span className="font-jakarta text-[16px] md:text-xl font-bold tracking-tighter uppercase text-white leading-none">
-          GTM <span className="text-lime-500">Vector</span>
-        </span>
-      </a>
+const Navbar: React.FC = () => {
+  const [open, setOpen] = useState(false);
 
-      {/* Links */}
-      <div className="hidden md:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
-        <a href="#services" className="hover:text-lime-500 transition-all hover:tracking-[0.3em]">
-          Services
-        </a>
-        <a href="#process" className="hover:text-lime-500 transition-all hover:tracking-[0.3em]">
-          Process
-        </a>
-        <a href="#faq" className="hover:text-lime-500 transition-all hover:tracking-[0.3em]">
-          FAQ
-        </a>
+  const items = [
+    { label: 'Outbound Automation', href: '/outbound-automation' },
+    { label: 'Deliverability', href: '/cold-email-deliverability' },
+    { label: 'Guides', href: '/guides' },
+    { label: 'Compare', href: '/compare' },
+    { label: 'Glossary', href: '/glossary' },
+  ];
+
+  const close = () => setOpen(false);
+
+  // Close on Escape
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-[60] bg-black/70 backdrop-blur-2xl border-b border-white/5">
+      <div className="py-3 px-5 md:py-4 md:px-12">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo */}
+          <a href="/" className="flex items-center gap-3" aria-label="GTM Vector Home" onClick={close}>
+            <img src="/gtm-vector-logo.png" alt="GTM Vector" className="h-9 w-auto md:h-10" />
+          </a>
+
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
+            {items.map((it) => (
+              <a
+                key={it.href}
+                href={it.href}
+                className="hover:text-lime-500 transition-all hover:tracking-[0.28em]"
+              >
+                {it.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center">
+            <a
+              href={CAL_LINK}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-lime-500 text-black font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-105 hover:bg-white"
+            >
+              Get in touch
+            </a>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            className="md:hidden inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/10 bg-white/5 text-white"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+          >
+            <div className="flex flex-col gap-1.5">
+              <span className={`h-0.5 w-6 bg-white transition-all ${open ? 'translate-y-2 rotate-45' : ''}`} />
+              <span className={`h-0.5 w-6 bg-white transition-all ${open ? 'opacity-0' : ''}`} />
+              <span className={`h-0.5 w-6 bg-white transition-all ${open ? '-translate-y-2 -rotate-45' : ''}`} />
+            </div>
+          </button>
+        </div>
       </div>
 
-      {/* CTA */}
-      <a
-        href={CAL_LINK}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center justify-center whitespace-nowrap px-4 sm:px-5 md:px-6 py-2.5 md:py-3 rounded-xl bg-lime-500 text-black font-black text-[10px] sm:text-xs uppercase tracking-[0.22em] transition-all hover:scale-105 hover:bg-white"
-      >
-        Get in touch
-      </a>
-    </div>
-  </nav>
-);
+      {/* Mobile panel */}
+      <div className={`md:hidden overflow-hidden transition-all duration-300 ${open ? 'max-h-[560px]' : 'max-h-0'}`}>
+        <div className="px-5 pb-5 pt-2 border-t border-white/5">
+          <div className="flex flex-col gap-3 text-sm font-bold text-gray-200">
+            {items.map((it) => (
+              <a
+                key={it.href}
+                href={it.href}
+                onClick={close}
+                className="py-3 px-4 rounded-2xl bg-white/5 border border-white/10 active:scale-[0.99]"
+              >
+                {it.label}
+              </a>
+            ))}
+
+            <a
+              href={CAL_LINK}
+              target="_blank"
+              rel="noreferrer"
+              onClick={close}
+              className="mt-2 inline-flex items-center justify-center py-3 rounded-2xl bg-lime-500 text-black font-black uppercase tracking-[0.18em] text-xs"
+            >
+              Get in touch
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
 const ParticleDrift: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -142,7 +205,10 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, ans
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="border-b border-white/5 last:border-0 overflow-hidden">
-      <button onClick={() => setIsOpen(!isOpen)} className="w-full py-6 md:py-8 flex items-center justify-between text-left group transition-all">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full py-6 md:py-8 flex items-center justify-between text-left group transition-all"
+      >
         <span
           className={`text-base md:text-xl font-bold transition-all duration-500 ${
             isOpen ? 'text-lime-500 translate-x-2' : 'text-gray-300'
@@ -199,8 +265,8 @@ const Home: React.FC = () => {
         <div className="absolute bottom-[10%] left-[20%] w-[620px] h-[620px] md:w-[700px] md:h-[700px] bg-emerald-600/5 blur-[200px] rounded-full mix-blend-screen" />
       </div>
 
-      {/* Keep space tight under fixed navbar */}
-      <main className="relative z-10 pt-2 md:pt-22 px-4 sm:px-6 overflow-hidden">
+      {/* Space under fixed navbar */}
+      <main className="relative z-10 pt-20 md:pt-24 px-4 sm:px-6 overflow-hidden">
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto py-10 md:py-16 text-center relative">
           <div className="inline-flex items-center gap-3 px-5 md:px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-[9px] md:text-[10px] font-black uppercase tracking-[0.35em] md:tracking-[0.4em] text-lime-400 mb-7 shadow-2xl animate-bounce-slow">
@@ -241,8 +307,8 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Results Band */}
-        <section className="max-w-7xl mx-auto mb-18 md:mb-32">
+        {/* Results Band (slightly bigger gap from hero) */}
+        <section className="max-w-7xl mx-auto mt-8 md:mt-10 mb-18 md:mb-32">
           <div className="relative group overflow-hidden rounded-[40px] md:rounded-[50px] p-[1px] bg-gradient-to-b from-white/20 to-transparent">
             <div className="bg-[#0a0a0a]/90 backdrop-blur-3xl rounded-[39px] md:rounded-[49px] py-12 md:py-16 px-6 md:px-8 flex flex-col items-center text-center relative">
               <div className="absolute inset-0 bg-lime-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -409,10 +475,6 @@ const Home: React.FC = () => {
         <section className="max-w-7xl mx-auto py-14 md:py-24 mb-20 md:mb-40 relative overflow-hidden rounded-[36px] md:rounded-[60px]">
           <div className="absolute inset-0 bg-gradient-to-br from-lime-600/20 via-emerald-600/10 to-blue-600/20 animate-gradient-slow opacity-60 pointer-events-none" />
           <div className="relative z-10 bg-black/40 backdrop-blur-3xl border border-white/5 rounded-[36px] md:rounded-[60px] py-14 md:py-24 px-5 sm:px-10 text-center flex flex-col items-center group">
-            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-30 transition-opacity hidden md:block">
-              <Workflow size={200} className="text-lime-500" />
-            </div>
-
             <h2 className="text-5xl sm:text-6xl md:text-[90px] font-jakarta font-black mb-7 md:mb-10 tracking-tighter leading-[0.9] text-white">
               Ready to <br /> Upgrade?
             </h2>
