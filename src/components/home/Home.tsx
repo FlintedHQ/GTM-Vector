@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[60] bg-black/70 backdrop-blur-2xl border-b border-white/5">
-      <div className="py-3 px-5 md:py-4 md:px-12">
+      <div className="py-0.0 px-4 md:py-2 md:px-12">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
           {/* Logo */}
           <a href="/" className="flex items-center gap-3" aria-label="GTM Vector Home">
@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
           {/* Mobile hamburger */}
           <button
             type="button"
-            className="md:hidden inline-flex items-center justify-center w-12 h-12 rounded-2xl border border-white/10 bg-white/5 text-white"
+            className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-2xl border border-white/10 bg-white/5 text-white"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
