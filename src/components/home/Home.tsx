@@ -9,12 +9,20 @@ import {
   Layers,
   Search,
   Database,
+  Share2,
+  Zap,
+  Brain,
+  MessageSquare,
+  LineChart,
+  Monitor,
+  CheckCircle2,
 } from 'lucide-react';
 
 const CAL_LINK = 'https://cal.com/dino-lukovac-7ap2jt/freegtmaudit';
 
-// --- Sub-components ---
-
+// ----------------------------
+// NAVBAR (single source of truth)
+// ----------------------------
 const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
 
@@ -28,21 +36,12 @@ const Navbar: React.FC = () => {
 
   const close = () => setOpen(false);
 
-  // Close on Escape
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-[60] bg-black/70 backdrop-blur-2xl border-b border-white/5">
       <div className="py-3 px-5 md:py-4 md:px-12">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-3" aria-label="GTM Vector Home" onClick={close}>
+          <a href="/" className="flex items-center gap-3" aria-label="GTM Vector Home">
             <img src="/gtm-vector-logo.png" alt="GTM Vector" className="h-9 w-auto md:h-10" />
           </a>
 
@@ -89,7 +88,7 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Mobile panel */}
-      <div className={`md:hidden overflow-hidden transition-all duration-300 ${open ? 'max-h-[560px]' : 'max-h-0'}`}>
+      <div className={`md:hidden overflow-hidden transition-all duration-300 ${open ? 'max-h-[520px]' : 'max-h-0'}`}>
         <div className="px-5 pb-5 pt-2 border-t border-white/5">
           <div className="flex flex-col gap-3 text-sm font-bold text-gray-200">
             {items.map((it) => (
@@ -119,6 +118,9 @@ const Navbar: React.FC = () => {
   );
 };
 
+// ----------------------------
+// PARTICLES
+// ----------------------------
 const ParticleDrift: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -184,6 +186,9 @@ const ParticleDrift: React.FC = () => {
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />;
 };
 
+// ----------------------------
+// CARDS + FAQ
+// ----------------------------
 const ServiceCard: React.FC<{ icon: any; title: string; description: string }> = ({ icon: Icon, title, description }) => (
   <div className="glass-card p-8 md:p-10 rounded-[34px] md:rounded-[40px] group relative overflow-hidden flex flex-col items-start gap-6">
     <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -237,8 +242,240 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, ans
   );
 };
 
-// --- Main ---
+// ----------------------------
+// GTM STRATEGY SECTION (NEW)
+// ----------------------------
+interface StrategyStep {
+  title: string;
+  description?: string;
+  tools: { name: string; icon?: React.ReactNode; color?: string }[];
+  position: 'left' | 'right' | 'center';
+}
 
+const strategySteps: StrategyStep[] = [
+  {
+    title: 'Demand Generation',
+    description: 'Publishing high-performing content across channels.',
+    position: 'left',
+    tools: [
+      { name: 'n8n', icon: <Share2 size={12} /> },
+      { name: 'GPT-4', icon: <Brain size={12} /> },
+      { name: 'LinkedIn', color: 'bg-blue-600/20' },
+    ],
+  },
+  {
+    title: 'Identity Resolution',
+    description: 'De-anonymizing website visitors into accounts.',
+    position: 'right',
+    tools: [
+      { name: 'RB2B', color: 'bg-purple-500/20' },
+      { name: 'Koala', color: 'bg-blue-500/20' },
+      { name: 'Clearbit', color: 'bg-emerald-500/20' },
+    ],
+  },
+  {
+    title: 'Signal Enrichment',
+    description: 'Waterfalling data sources for 100% coverage.',
+    position: 'left',
+    tools: [
+      { name: 'Clay', color: 'bg-orange-500/20' },
+      { name: 'Apollo', color: 'bg-blue-600/20' },
+      { name: 'PeopleData', color: 'bg-pink-500/20' },
+    ],
+  },
+  {
+    title: 'Central Data Warehouse',
+    description: 'Syncing all signals into a unified system of record.',
+    position: 'center',
+    tools: [
+      { name: 'Airtable', icon: <Database size={12} /> },
+      { name: 'n8n', icon: <Zap size={12} /> },
+    ],
+  },
+  {
+    title: 'AI Qualification',
+    description: 'Automated ICP matching and lead tiering.',
+    position: 'center',
+    tools: [
+      { name: 'OpenAI', icon: <Brain size={12} /> },
+      { name: 'Anthropic', color: 'bg-amber-500/20' },
+    ],
+  },
+  {
+    title: 'CRM Automation',
+    description: 'Auto-creating deals and updating lifecycle stages.',
+    position: 'right',
+    tools: [
+      { name: 'HubSpot', color: 'bg-orange-600/20' },
+      { name: 'Salesforce', color: 'bg-blue-400/20' },
+    ],
+  },
+  {
+    title: 'Autonomous Outreach',
+    description: 'Hyper-personalized multi-channel sequencing.',
+    position: 'center',
+    tools: [
+      { name: 'Smartlead', color: 'bg-indigo-500/20' },
+      { name: 'Instantly', color: 'bg-purple-500/20' },
+    ],
+  },
+  {
+    title: 'Real-time Monitoring',
+    description: 'Engagement tracking and intent alerting.',
+    position: 'left',
+    tools: [
+      { name: 'Slack', color: 'bg-red-500/20' },
+      { name: 'n8n', icon: <Monitor size={12} /> },
+    ],
+  },
+  {
+    title: 'AI Reply Agents',
+    description: 'Handling objections and booking meetings 24/7.',
+    position: 'center',
+    tools: [
+      { name: 'GPT-4o', icon: <MessageSquare size={12} /> },
+      { name: 'Cal.com', color: 'bg-black' },
+    ],
+  },
+  {
+    title: 'Closed-Won ROI',
+    description: 'Full-funnel attribution and revenue growth.',
+    position: 'right',
+    tools: [
+      { name: 'Revenue', icon: <LineChart size={12} /> },
+      { name: 'ROI', icon: <CheckCircle2 size={12} /> },
+    ],
+  },
+];
+
+const GTMStrategy: React.FC = () => {
+  return (
+    <section className="max-w-7xl mx-auto py-20 md:py-24 px-4 relative overflow-hidden">
+      {/* Background Glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none -z-10">
+        <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-lime-500/5 blur-[120px] rounded-full animate-pulse-slow" />
+        <div className="absolute bottom-[20%] right-[10%] w-[400px] h-[400px] bg-emerald-500/5 blur-[120px] rounded-full" />
+      </div>
+
+      <div className="text-center mb-16 md:mb-24">
+        <div className="text-lime-500 text-[10px] font-black uppercase tracking-[0.4em] mb-6 flex items-center justify-center gap-4">
+          <div className="w-12 h-[1px] bg-lime-500/50" /> Future-Proof Operations{' '}
+          <div className="w-12 h-[1px] bg-lime-500/50" />
+        </div>
+        <p className="text-gray-400 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed opacity-80">
+          We engineer <span className="text-white">autonomous revenue workflows</span> that scale infinitely.
+        </p>
+      </div>
+
+      <div className="relative min-h-[1400px] md:min-h-[1600px] py-10">
+        {/* Connector line (desktop only) */}
+        <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
+          <svg className="w-full h-full" viewBox="0 0 1000 1600" fill="none" preserveAspectRatio="none">
+            <path
+              d="M 250 80 
+                 C 500 80, 750 160, 750 240 
+                 C 750 320, 250 320, 250 400 
+                 C 250 480, 500 480, 500 560 
+                 C 500 640, 750 640, 750 720 
+                 C 750 800, 250 800, 250 880 
+                 C 250 960, 500 960, 500 1040 
+                 C 500 1120, 750 1120, 750 1200 
+                 C 750 1280, 250 1280, 250 1360 
+                 C 250 1440, 500 1440, 500 1520"
+              stroke="rgba(132, 204, 22, 0.15)"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 250 80 
+                 C 500 80, 750 160, 750 240 
+                 C 750 320, 250 320, 250 400 
+                 C 250 480, 500 480, 500 560 
+                 C 500 640, 750 640, 750 720 
+                 C 750 800, 250 800, 250 880 
+                 C 250 960, 500 960, 500 1040 
+                 C 500 1120, 750 1120, 750 1200 
+                 C 750 1280, 250 1280, 250 1360 
+                 C 250 1440, 500 1440, 500 1520"
+              stroke="url(#lime-gradient)"
+              strokeWidth="4"
+              strokeDasharray="12 24"
+              strokeLinecap="round"
+              className="animate-[dash_20s_linear_infinite]"
+            />
+            <defs>
+              <linearGradient id="lime-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#bef264" />
+                <stop offset="100%" stopColor="#10b981" />
+              </linearGradient>
+              <style>{`
+                @keyframes dash { to { stroke-offset: -1000; } }
+              `}</style>
+            </defs>
+
+            {/* Beacon dot */}
+            <circle r="6" fill="#84cc16">
+              <animateMotion
+                dur="12s"
+                repeatCount="indefinite"
+                path="M 250 80 C 500 80, 750 160, 750 240 C 750 320, 250 320, 250 400 C 250 480, 500 480, 500 560 C 500 640, 750 640, 750 720 C 750 800, 250 800, 250 880 C 250 960, 500 960, 500 1040 C 500 1120, 750 1120, 750 1200 C 750 1280, 250 1280, 250 1360 C 250 1440, 500 1440, 500 1520"
+              />
+              <animate r="6" values="6;10;6" dur="2s" repeatCount="indefinite" />
+            </circle>
+          </svg>
+        </div>
+
+        {/* Steps */}
+        <div className="relative z-10 flex flex-col gap-12 md:gap-0">
+          {strategySteps.map((step, idx) => {
+            const alignments: Record<string, string> = {
+              left: 'md:justify-start md:ml-[10%]',
+              right: 'md:justify-end md:mr-[10%]',
+              center: 'md:justify-center',
+            };
+
+            return (
+              <div key={idx} className={`flex w-full ${alignments[step.position]} md:h-40 items-center`}>
+                <div className="group glass-card p-6 md:p-8 rounded-[32px] border border-white/5 hover:border-lime-500/40 transition-all duration-500 w-full md:w-[380px] hover:shadow-[0_20px_60px_-15px_rgba(132,204,22,0.15)] relative overflow-hidden">
+                  <div className="absolute -top-1 -right-1 w-12 h-12 bg-white/5 border border-white/10 rounded-bl-3xl flex items-center justify-center font-black text-gray-700 group-hover:text-lime-500/50 transition-colors">
+                    {(idx + 1).toString().padStart(2, '0')}
+                  </div>
+
+                  <h4 className="text-white font-bold text-lg md:text-xl mb-2 tracking-tight group-hover:text-lime-500 transition-colors flex items-center gap-3">
+                    {step.title}
+                  </h4>
+                  <p className="text-gray-400 text-xs md:text-sm font-medium mb-5 opacity-70 group-hover:opacity-100 transition-opacity">
+                    {step.description}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {step.tools.map((tool, tIdx) => (
+                      <div
+                        key={tIdx}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-gray-300 transition-all ${
+                          tool.color || ''
+                        }`}
+                      >
+                        {tool.icon && (
+                          <span className="text-lime-500 group-hover:scale-110 transition-transform">{tool.icon}</span>
+                        )}
+                        {tool.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ----------------------------
+// MAIN PAGE
+// ----------------------------
 const Home: React.FC = () => {
   const [scrolled, setScrolled] = useState(0);
 
@@ -254,7 +491,7 @@ const Home: React.FC = () => {
       <ParticleDrift />
       <Navbar />
 
-      {/* Dynamic Background Elements */}
+      {/* Background elements */}
       <div className="fixed inset-0 shimmer-grid opacity-20 pointer-events-none z-0" />
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-0 overflow-hidden"
@@ -265,9 +502,8 @@ const Home: React.FC = () => {
         <div className="absolute bottom-[10%] left-[20%] w-[620px] h-[620px] md:w-[700px] md:h-[700px] bg-emerald-600/5 blur-[200px] rounded-full mix-blend-screen" />
       </div>
 
-      {/* Space under fixed navbar */}
-      <main className="relative z-10 pt-20 md:pt-24 px-4 sm:px-6 overflow-hidden">
-        {/* Hero Section */}
+      <main className="relative z-10 pt-2 md:pt-22 px-4 sm:px-6 overflow-hidden">
+        {/* Hero */}
         <section className="max-w-7xl mx-auto py-10 md:py-16 text-center relative">
           <div className="inline-flex items-center gap-3 px-5 md:px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-[9px] md:text-[10px] font-black uppercase tracking-[0.35em] md:tracking-[0.4em] text-lime-400 mb-7 shadow-2xl animate-bounce-slow">
             <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-lime-500/10">
@@ -307,26 +543,12 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Results Band (slightly bigger gap from hero) */}
-        <section className="max-w-7xl mx-auto mt-8 md:mt-10 mb-18 md:mb-32">
-          <div className="relative group overflow-hidden rounded-[40px] md:rounded-[50px] p-[1px] bg-gradient-to-b from-white/20 to-transparent">
-            <div className="bg-[#0a0a0a]/90 backdrop-blur-3xl rounded-[39px] md:rounded-[49px] py-12 md:py-16 px-6 md:px-8 flex flex-col items-center text-center relative">
-              <div className="absolute inset-0 bg-lime-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              <span className="text-6xl sm:text-7xl md:text-[120px] font-jakarta font-black text-white mb-3 md:mb-4 tracking-tighter text-glow animate-pulse-slow">
-                +73%
-              </span>
-              <p className="text-2xl sm:text-3xl md:text-5xl font-jakarta font-bold text-gray-200 tracking-tight max-w-2xl">
-                booked meetings on average.
-              </p>
-              <div className="h-1.5 w-24 md:w-32 bg-lime-500 mt-8 md:mt-10 mb-5 md:mb-6 rounded-full opacity-60 group-hover:w-40 md:group-hover:w-48 transition-all duration-700" />
-              <p className="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black italic">
-                Varies by ICP, offer, and volume.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* NEW: GTM Strategy lives right under hero (replaces +73% band) */}
+        <div id="gtm-strategy" className="scroll-mt-24">
+          <GTMStrategy />
+        </div>
 
-        {/* Services Section */}
+        {/* Services */}
         <section id="services" className="max-w-7xl mx-auto py-14 md:py-20 mb-16 md:mb-24">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 md:mb-16 gap-8 md:gap-10">
             <div className="max-w-2xl">
@@ -362,7 +584,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Process Section */}
+        {/* Process */}
         <section id="process" className="max-w-6xl mx-auto py-16 md:py-24 mb-16 md:mb-24 relative">
           <div className="text-center mb-14 md:mb-20">
             <div className="text-lime-500 text-[10px] font-black uppercase tracking-[0.4em] mb-5 md:mb-6">Methodology</div>
@@ -426,7 +648,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Condensed Stack Statement */}
+        {/* Stack statement */}
         <section className="max-w-6xl mx-auto py-12 md:py-20 mb-16 md:mb-24 text-center">
           <p className="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-400 leading-tight">
             <span className="text-white font-black">n8n is the nervous system.</span>
@@ -439,7 +661,7 @@ const Home: React.FC = () => {
           </p>
         </section>
 
-        {/* FAQ Section */}
+        {/* FAQ */}
         <section id="faq" className="max-w-5xl mx-auto py-16 md:py-24 mb-20 md:mb-32 relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-lime-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
           <div className="text-center mb-12 md:mb-16">
@@ -471,10 +693,14 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Final CTA Section */}
+        {/* Final CTA */}
         <section className="max-w-7xl mx-auto py-14 md:py-24 mb-20 md:mb-40 relative overflow-hidden rounded-[36px] md:rounded-[60px]">
           <div className="absolute inset-0 bg-gradient-to-br from-lime-600/20 via-emerald-600/10 to-blue-600/20 animate-gradient-slow opacity-60 pointer-events-none" />
           <div className="relative z-10 bg-black/40 backdrop-blur-3xl border border-white/5 rounded-[36px] md:rounded-[60px] py-14 md:py-24 px-5 sm:px-10 text-center flex flex-col items-center group">
+            <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-30 transition-opacity hidden md:block">
+              <Workflow size={200} className="text-lime-500" />
+            </div>
+
             <h2 className="text-5xl sm:text-6xl md:text-[90px] font-jakarta font-black mb-7 md:mb-10 tracking-tighter leading-[0.9] text-white">
               Ready to <br /> Upgrade?
             </h2>
@@ -510,11 +736,7 @@ const Home: React.FC = () => {
       <footer className="relative z-20 py-10 md:py-14 px-4 sm:px-6 border-t border-white/5 bg-[#020202]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 md:gap-10">
           <div className="flex items-center gap-3">
-            <img
-              src="/gtm-vector-logo.png"
-              alt="GTM Vector"
-              className="w-9 h-9 md:w-10 md:h-10 object-contain"
-            />
+            <img src="/gtm-vector-logo.png" alt="GTM Vector" className="w-9 h-9 md:w-10 md:h-10 object-contain" />
             <span className="font-jakarta text-lg md:text-xl font-black tracking-tighter uppercase text-white leading-none">
               GTM <span className="text-lime-500">Vector</span>
             </span>
