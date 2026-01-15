@@ -1,14 +1,24 @@
 /* --- Custom effects for the React homepage --- */
+/* --- Enhanced with cutting-edge visual effects --- */
 
+/* Logo glow effect */
 .logo-glow {
   filter: drop-shadow(0 0 18px rgba(132,204,22,0.35));
 }
 
+/* Glass card with enhanced effects */
 .glass-card {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   box-shadow: 0 20px 60px rgba(0,0,0,0.55);
   backdrop-filter: blur(18px);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(132, 204, 22, 0.15);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.6), 0 0 40px rgba(132, 204, 22, 0.05);
 }
 
 /* Optimized glass-card for mobile - reduced blur for better performance */
@@ -17,8 +27,13 @@
     backdrop-filter: blur(12px);
     box-shadow: 0 12px 40px rgba(0,0,0,0.45);
   }
+
+  .glass-card:hover {
+    box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+  }
 }
 
+/* Noise overlay with enhanced texture */
 .noise-overlay {
   position: fixed;
   inset: 0;
@@ -26,6 +41,7 @@
   pointer-events: none;
   opacity: 0.08;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
 }
 
 /* Reduce noise opacity on mobile for cleaner look */
@@ -35,6 +51,7 @@
   }
 }
 
+/* Shimmer grid background */
 .shimmer-grid {
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
@@ -51,32 +68,210 @@
   }
 }
 
+/* ========================================
+   ANIMATION KEYFRAMES
+   ======================================== */
+
+/* Gradient shift animation */
 @keyframes gradientShift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
 .animate-gradient-slow {
   animation: gradientShift 10s ease-in-out infinite;
 }
 
+/* Slow pulse animation */
 @keyframes slowPulse {
   0%,100% { opacity: 0.55; transform: translateZ(0) scale(1); }
   50%     { opacity: 0.85; transform: translateZ(0) scale(1.03); }
 }
+
 .animate-pulse-slow {
   animation: slowPulse 5.5s ease-in-out infinite;
 }
+
+/* Floating orb animation */
+@keyframes floatOrb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(30px, -40px) scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-20px, -60px) scale(0.95);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate(40px, -20px) scale(1.05);
+    opacity: 0.7;
+  }
+}
+
+.animate-float-orb {
+  animation: floatOrb 20s ease-in-out infinite;
+}
+
+/* Morphing blob animation */
+@keyframes morph {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    transform: rotate(90deg) scale(1.05);
+  }
+  50% {
+    border-radius: 50% 60% 30% 60% / 40% 30% 70% 50%;
+    transform: rotate(180deg) scale(0.95);
+  }
+  75% {
+    border-radius: 60% 40% 50% 40% / 70% 50% 30% 60%;
+    transform: rotate(270deg) scale(1.02);
+  }
+}
+
+.animate-morph {
+  animation: morph 25s ease-in-out infinite;
+}
+
+/* Shimmer effect animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Scroll indicator animation */
+@keyframes scrollIndicator {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.5;
+  }
+}
+
+.animate-scroll-indicator {
+  animation: scrollIndicator 1.5s ease-in-out infinite;
+}
+
+/* Slow bounce animation */
+@keyframes slowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: slowBounce 3s ease-in-out infinite;
+}
+
+/* Glitch text effect */
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+    text-shadow: none;
+  }
+  20% {
+    transform: translate(-2px, 2px);
+    text-shadow: 2px 0 rgba(132, 204, 22, 0.7), -2px 0 rgba(59, 130, 246, 0.7);
+  }
+  40% {
+    transform: translate(2px, -2px);
+    text-shadow: -2px 0 rgba(132, 204, 22, 0.7), 2px 0 rgba(59, 130, 246, 0.7);
+  }
+  60% {
+    transform: translate(-1px, 1px);
+    text-shadow: 1px 0 rgba(132, 204, 22, 0.7), -1px 0 rgba(59, 130, 246, 0.7);
+  }
+  80% {
+    transform: translate(1px, -1px);
+    text-shadow: -1px 0 rgba(132, 204, 22, 0.7), 1px 0 rgba(59, 130, 246, 0.7);
+  }
+}
+
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text:hover {
+  animation: glitch 0.5s ease-in-out;
+}
+
+/* Hero text reveal animation */
+@keyframes heroTextReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.hero-text-reveal {
+  animation: heroTextReveal 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Dash animation for SVG paths */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+/* ========================================
+   MOBILE OPTIMIZATIONS
+   ======================================== */
 
 /* Reduce animation intensity on mobile for better performance */
 @media (max-width: 640px) {
   .animate-pulse-slow {
     animation: slowPulse 8s ease-in-out infinite;
   }
+
   .animate-gradient-slow {
     animation: gradientShift 15s ease-in-out infinite;
   }
+
+  .animate-float-orb {
+    animation: floatOrb 30s ease-in-out infinite;
+  }
+
+  .animate-bounce-slow {
+    animation: slowBounce 4s ease-in-out infinite;
+  }
+
+  .animate-morph {
+    animation: morph 40s ease-in-out infinite;
+  }
 }
+
+/* ========================================
+   SHADOW UTILITIES
+   ======================================== */
 
 /* If Tailwind doesn't include shadow-3xl by default, define it here */
 .shadow-3xl {
@@ -89,12 +284,29 @@
   }
 }
 
-/* Optional: glow text */
+/* ========================================
+   TEXT EFFECTS
+   ======================================== */
+
+/* Glow text */
 .text-glow {
   text-shadow: 0 0 18px rgba(132,204,22,0.18);
 }
 
-/* Mobile touch improvements */
+/* Gradient text animation */
+.text-gradient-animate {
+  background: linear-gradient(90deg, #84cc16, #10b981, #3b82f6, #84cc16);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 8s ease-in-out infinite;
+}
+
+/* ========================================
+   MOBILE TOUCH IMPROVEMENTS
+   ======================================== */
+
 @media (max-width: 768px) {
   /* Ensure touch targets are at least 44px */
   button, a {
@@ -116,24 +328,127 @@
   * {
     -webkit-tap-highlight-color: rgba(132, 204, 22, 0.1);
   }
+
+  /* Disable hover effects on touch devices for better performance */
+  @media (hover: none) {
+    .glass-card:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    }
+  }
 }
 
-/* Slow bounce animation */
-@keyframes slowBounce {
-  0%, 100% {
-    transform: translateY(0);
+/* ========================================
+   INTERACTIVE EFFECTS
+   ======================================== */
+
+/* Magnetic button effect enhancement */
+.magnetic-button {
+  transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* Card hover lift effect */
+.hover-lift {
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+}
+
+/* Shine sweep effect */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.shine-effect:hover::after {
+  left: 100%;
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  50% {
-    transform: translateY(-8px);
+
+  .animate-pulse-slow,
+  .animate-gradient-slow,
+  .animate-float-orb,
+  .animate-bounce-slow,
+  .animate-morph,
+  .animate-shimmer,
+  .animate-scroll-indicator {
+    animation: none !important;
   }
 }
 
-.animate-bounce-slow {
-  animation: slowBounce 3s ease-in-out infinite;
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-@media (max-width: 640px) {
-  .animate-bounce-slow {
-    animation: slowBounce 4s ease-in-out infinite;
-  }
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(132, 204, 22, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(132, 204, 22, 0.5);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(132, 204, 22, 0.3) rgba(255, 255, 255, 0.02);
+}
+
+/* ========================================
+   SELECTION STYLING
+   ======================================== */
+
+::selection {
+  background: rgba(132, 204, 22, 0.9);
+  color: black;
+}
+
+::-moz-selection {
+  background: rgba(132, 204, 22, 0.9);
+  color: black;
 }
