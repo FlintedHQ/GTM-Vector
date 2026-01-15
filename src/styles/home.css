@@ -11,6 +11,14 @@
   backdrop-filter: blur(18px);
 }
 
+/* Optimized glass-card for mobile - reduced blur for better performance */
+@media (max-width: 640px) {
+  .glass-card {
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+  }
+}
+
 .noise-overlay {
   position: fixed;
   inset: 0;
@@ -20,12 +28,27 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
 }
 
+/* Reduce noise opacity on mobile for cleaner look */
+@media (max-width: 640px) {
+  .noise-overlay {
+    opacity: 0.04;
+  }
+}
+
 .shimmer-grid {
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(circle at 50% 35%, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%);
+}
+
+/* Smaller grid on mobile */
+@media (max-width: 640px) {
+  .shimmer-grid {
+    background-size: 40px 40px;
+    opacity: 0.15;
+  }
 }
 
 @keyframes gradientShift {
@@ -45,12 +68,72 @@
   animation: slowPulse 5.5s ease-in-out infinite;
 }
 
+/* Reduce animation intensity on mobile for better performance */
+@media (max-width: 640px) {
+  .animate-pulse-slow {
+    animation: slowPulse 8s ease-in-out infinite;
+  }
+  .animate-gradient-slow {
+    animation: gradientShift 15s ease-in-out infinite;
+  }
+}
+
 /* If Tailwind doesn't include shadow-3xl by default, define it here */
 .shadow-3xl {
   box-shadow: 0 35px 90px rgba(0,0,0,0.65);
 }
 
+@media (max-width: 640px) {
+  .shadow-3xl {
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  }
+}
+
 /* Optional: glow text */
 .text-glow {
   text-shadow: 0 0 18px rgba(132,204,22,0.18);
+}
+
+/* Mobile touch improvements */
+@media (max-width: 768px) {
+  /* Ensure touch targets are at least 44px */
+  button, a {
+    min-height: 44px;
+  }
+
+  /* Smooth scrolling for mobile */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Better tap highlighting */
+  * {
+    -webkit-tap-highlight-color: rgba(132, 204, 22, 0.1);
+  }
+}
+
+/* Slow bounce animation */
+@keyframes slowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-bounce-slow {
+  animation: slowBounce 3s ease-in-out infinite;
+}
+
+@media (max-width: 640px) {
+  .animate-bounce-slow {
+    animation: slowBounce 4s ease-in-out infinite;
+  }
 }
