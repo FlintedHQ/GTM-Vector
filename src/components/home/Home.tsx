@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   ArrowRight,
   ChevronDown,
@@ -16,11 +16,288 @@ import {
   LineChart,
   Monitor,
   CheckCircle2,
-  Menu,
-  X,
+  Sparkles,
 } from 'lucide-react';
 
 const CAL_LINK = 'https://cal.com/dino-lukovac-7ap2jt/freegtmaudit';
+
+// ----------------------------
+// CUSTOM HOOKS FOR EFFECTS
+// ----------------------------
+
+// Hook for scroll-triggered animations using Intersection Observer
+const useScrollAnimation = (threshold = 0.1) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold, rootMargin: '50px' }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, isVisible };
+};
+
+// Hook for mouse position tracking (desktop only)
+const useMousePosition = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) return;
+
+    const updateMousePosition = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', updateMousePosition);
+    return () => window.removeEventListener('mousemove', updateMousePosition);
+  }, []);
+
+  return mousePosition;
+};
+
+// ----------------------------
+// ANIMATED COMPONENTS
+// ----------------------------
+
+// Animated gradient orb that follows cursor (desktop) or floats (mobile)
+const CursorGlow: React.FC = () => {
+  const mousePosition = useMousePosition();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+  }, []);
+
+  if (isMobile) return null;
+
+  return (
+    <div
+      className="fixed w-[400px] h-[400px] rounded-full pointer-events-none z-[5] transition-transform duration-700 ease-out"
+      style={{
+        background: 'radial-gradient(circle, rgba(132,204,22,0.08) 0%, transparent 70%)',
+        transform: `translate(${mousePosition.x - 200}px, ${mousePosition.y - 200}px)`,
+        filter: 'blur(40px)',
+      }}
+    />
+  );
+};
+
+// Floating orbs with physics-based animation
+const FloatingOrbs: React.FC = () => {
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[2] overflow-hidden">
+      {[...Array(5)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full animate-float-orb"
+          style={{
+            width: `${80 + i * 40}px`,
+            height: `${80 + i * 40}px`,
+            left: `${10 + i * 20}%`,
+            top: `${20 + (i % 3) * 25}%`,
+            background: `radial-gradient(circle, ${
+              i % 2 === 0 ? 'rgba(132,204,22,0.06)' : 'rgba(16,185,129,0.05)'
+            } 0%, transparent 70%)`,
+            animationDelay: `${i * 1.5}s`,
+            animationDuration: `${15 + i * 3}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Animated text reveal component
+const AnimatedText: React.FC<{ children: string; className?: string; delay?: number }> = ({
+  children,
+  className = '',
+  delay = 0,
+}) => {
+  const { ref, isVisible } = useScrollAnimation(0.3);
+
+  return (
+    <span ref={ref} className={`inline-block overflow-hidden ${className}`}>
+      <span
+        className={`inline-block transition-all duration-1000 ease-out ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+        }`}
+        style={{ transitionDelay: `${delay}ms` }}
+      >
+        {children}
+      </span>
+    </span>
+  );
+};
+
+// Staggered reveal for lists/grids
+const StaggeredReveal: React.FC<{ children: React.ReactNode; index: number; className?: string }> = ({
+  children,
+  index,
+  className = '',
+}) => {
+  const { ref, isVisible } = useScrollAnimation(0.15);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out ${className} ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+      style={{ transitionDelay: `${index * 100}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Magnetic button effect
+const MagneticButton: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  href?: string;
+  onClick?: () => void;
+}> = ({ children, className = '', href, onClick }) => {
+  const buttonRef = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (isMobile || !buttonRef.current) return;
+      const rect = buttonRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      setPosition({ x: x * 0.15, y: y * 0.15 });
+    },
+    [isMobile]
+  );
+
+  const handleMouseLeave = () => setPosition({ x: 0, y: 0 });
+
+  const style = {
+    transform: `translate(${position.x}px, ${position.y}px)`,
+    transition: 'transform 0.3s cubic-bezier(0.33, 1, 0.68, 1)',
+  };
+
+  if (href) {
+    return (
+      <a
+        ref={buttonRef as React.RefObject<HTMLAnchorElement>}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className={className}
+        style={style}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      ref={buttonRef as React.RefObject<HTMLButtonElement>}
+      className={className}
+      style={style}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+
+// 3D Tilt card effect
+const TiltCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [transform, setTransform] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (isMobile || !cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / 20;
+      const rotateY = (centerX - x) / 20;
+      setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`);
+    },
+    [isMobile]
+  );
+
+  const handleMouseLeave = () => setTransform('');
+
+  return (
+    <div
+      ref={cardRef}
+      className={`transition-transform duration-300 ease-out ${className}`}
+      style={{ transform }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Glitch text effect
+const GlitchText: React.FC<{ children: string; className?: string }> = ({ children, className = '' }) => {
+  return (
+    <span className={`glitch-text relative ${className}`} data-text={children}>
+      {children}
+    </span>
+  );
+};
+
+// Morphing blob background
+const MorphingBlob: React.FC<{ className?: string }> = ({ className = '' }) => {
+  return (
+    <div className={`absolute pointer-events-none ${className}`}>
+      <svg viewBox="0 0 200 200" className="w-full h-full animate-morph">
+        <defs>
+          <linearGradient id="blob-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="rgba(132,204,22,0.15)" />
+            <stop offset="50%" stopColor="rgba(16,185,129,0.1)" />
+            <stop offset="100%" stopColor="rgba(59,130,246,0.08)" />
+          </linearGradient>
+        </defs>
+        <path
+          fill="url(#blob-gradient)"
+          d="M47.5,-57.2C59.9,-46.5,67.3,-30.4,70.6,-13.4C73.9,3.6,73.1,21.5,65.1,35.6C57.1,49.7,42,60,25.4,66.1C8.8,72.2,-9.2,74.1,-25.8,69.3C-42.4,64.5,-57.5,53,-67.3,37.7C-77.1,22.4,-81.5,3.3,-77.8,-13.8C-74.1,-30.9,-62.3,-46,-47.6,-56.4C-32.9,-66.8,-15.5,-72.4,1.2,-73.9C17.9,-75.3,35.1,-67.8,47.5,-57.2Z"
+          transform="translate(100 100)"
+        />
+      </svg>
+    </div>
+  );
+};
 
 // ----------------------------
 // NAVBAR (single source of truth)
@@ -34,6 +311,27 @@ const navItems = [
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+
+      // Update active section based on scroll position
+      const sections = navItems.map(item => item.href.slice(1));
+      for (const section of sections.reverse()) {
+        const el = document.getElementById(section);
+        if (el && el.getBoundingClientRect().top <= 100) {
+          setActiveSection(section);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
@@ -44,62 +342,87 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[60] bg-black/70 backdrop-blur-2xl border-b border-white/5">
-      <div className="py-2 px-4 md:py-2 md:px-12">
+    <nav className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-500 ${
+      scrolled
+        ? 'bg-black/80 backdrop-blur-2xl border-b border-white/10 shadow-2xl'
+        : 'bg-black/50 backdrop-blur-xl border-b border-white/5'
+    }`}>
+      <div className="py-2 px-4 md:py-3 md:px-12">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-3" aria-label="GTM Vector Home">
-            <img src="/gtm-vector-logo.png" alt="GTM Vector" className="h-9 w-auto md:h-10" />
+          {/* Logo with hover effect */}
+          <a href="/" className="flex items-center gap-3 group" aria-label="GTM Vector Home">
+            <img
+              src="/gtm-vector-logo.png"
+              alt="GTM Vector"
+              className="h-9 w-auto md:h-10 transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(132,204,22,0.5)]"
+            />
           </a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation with animated underline */}
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <button
                 key={item.href}
                 onClick={() => handleNavClick(item.href)}
-                className="text-gray-400 hover:text-lime-500 font-bold text-sm uppercase tracking-[0.15em] transition-colors"
+                className={`relative text-sm uppercase tracking-[0.15em] transition-all duration-300 font-bold group ${
+                  activeSection === item.href.slice(1) ? 'text-lime-500' : 'text-gray-400 hover:text-white'
+                }`}
               >
                 {item.label}
+                <span className={`absolute -bottom-1 left-0 h-[2px] bg-gradient-to-r from-lime-400 to-emerald-500 transition-all duration-300 ${
+                  activeSection === item.href.slice(1) ? 'w-full' : 'w-0 group-hover:w-full'
+                }`} />
               </button>
             ))}
           </div>
 
           {/* CTA + Mobile Menu Button */}
           <div className="flex items-center gap-4">
-            <a
+            <MagneticButton
               href={CAL_LINK}
-              target="_blank"
-              rel="noreferrer"
-              className="hidden md:inline-flex items-center justify-center px-6 py-3 rounded-xl bg-lime-500 text-black font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-105 hover:bg-white"
+              className="hidden md:inline-flex items-center justify-center px-6 py-3 rounded-xl bg-lime-500 text-black font-black text-xs uppercase tracking-[0.2em] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(132,204,22,0.4)] relative overflow-hidden group"
             >
-              Get in touch
-            </a>
+              <span className="relative z-10">Get in touch</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-lime-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </MagneticButton>
 
-            {/* Hamburger Menu Button (Mobile) */}
+            {/* Hamburger Menu Button (Mobile) with animation */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-white hover:text-lime-500 transition-colors"
+              className="md:hidden p-2 text-white hover:text-lime-500 transition-all duration-300 hover:scale-110"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              <div className="relative w-7 h-7">
+                <span className={`absolute left-0 block w-7 h-0.5 bg-current transition-all duration-300 ${
+                  mobileMenuOpen ? 'top-3 rotate-45' : 'top-1'
+                }`} />
+                <span className={`absolute left-0 top-3 block w-7 h-0.5 bg-current transition-all duration-300 ${
+                  mobileMenuOpen ? 'opacity-0 translate-x-3' : 'opacity-100'
+                }`} />
+                <span className={`absolute left-0 block w-7 h-0.5 bg-current transition-all duration-300 ${
+                  mobileMenuOpen ? 'top-3 -rotate-45' : 'top-5'
+                }`} />
+              </div>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Panel */}
+      {/* Mobile Menu Panel with staggered animation */}
       <div
-        className={`md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-2xl border-b border-white/10 transition-all duration-300 overflow-hidden ${
-          mobileMenuOpen ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'
+        className={`md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-2xl border-b border-white/10 transition-all duration-500 overflow-hidden ${
+          mobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="px-6 py-6 flex flex-col gap-4">
-          {navItems.map((item) => (
+        <div className="px-6 py-6 flex flex-col gap-2">
+          {navItems.map((item, idx) => (
             <button
               key={item.href}
               onClick={() => handleNavClick(item.href)}
-              className="text-left text-gray-300 hover:text-lime-500 font-bold text-base uppercase tracking-[0.15em] transition-colors py-3 border-b border-white/5 last:border-0"
+              className={`text-left text-gray-300 hover:text-lime-500 font-bold text-base uppercase tracking-[0.15em] transition-all py-4 border-b border-white/5 last:border-0 hover:translate-x-2 hover:pl-2 hover:border-l-2 hover:border-l-lime-500 ${
+                mobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
+              }`}
+              style={{ transitionDelay: mobileMenuOpen ? `${idx * 75}ms` : '0ms' }}
             >
               {item.label}
             </button>
@@ -108,7 +431,10 @@ const Navbar: React.FC = () => {
             href={CAL_LINK}
             target="_blank"
             rel="noreferrer"
-            className="mt-4 inline-flex items-center justify-center px-6 py-4 rounded-xl bg-lime-500 text-black font-black text-sm uppercase tracking-[0.2em] transition-all hover:bg-white"
+            className={`mt-4 inline-flex items-center justify-center px-6 py-4 rounded-xl bg-lime-500 text-black font-black text-sm uppercase tracking-[0.2em] transition-all hover:bg-white active:scale-95 ${
+              mobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}
+            style={{ transitionDelay: mobileMenuOpen ? '300ms' : '0ms' }}
           >
             Get in touch
           </a>
@@ -119,10 +445,11 @@ const Navbar: React.FC = () => {
 };
 
 // ----------------------------
-// PARTICLES
+// PARTICLES - Enhanced with connections and depth
 // ----------------------------
 const ParticleDrift: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -130,8 +457,22 @@ const ParticleDrift: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let particles: { x: number; y: number; size: number; speedX: number; speedY: number; opacity: number }[] = [];
-    const particleCount = 40;
+    interface Particle {
+      x: number;
+      y: number;
+      size: number;
+      speedX: number;
+      speedY: number;
+      opacity: number;
+      layer: number;
+      pulse: number;
+      pulseSpeed: number;
+    }
+
+    let particles: Particle[] = [];
+    const particleCount = 60;
+    const connectionDistance = 120;
+    const mouseInfluence = 100;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -141,34 +482,93 @@ const ParticleDrift: React.FC = () => {
     const createParticles = () => {
       particles = [];
       for (let i = 0; i < particleCount; i++) {
+        const layer = Math.random();
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 1.5 + 0.2,
-          speedX: (Math.random() - 0.5) * 0.2,
-          speedY: (Math.random() - 0.5) * 0.2,
-          opacity: Math.random() * 0.2 + 0.05,
+          size: (Math.random() * 2 + 0.5) * (layer + 0.5),
+          speedX: (Math.random() - 0.5) * 0.3 * (layer + 0.5),
+          speedY: (Math.random() - 0.5) * 0.3 * (layer + 0.5),
+          opacity: (Math.random() * 0.3 + 0.1) * (layer + 0.5),
+          layer,
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: Math.random() * 0.02 + 0.01,
         });
       }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
     };
 
     let raf = 0;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw connections first (behind particles)
+      particles.forEach((p1, i) => {
+        particles.slice(i + 1).forEach((p2) => {
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < connectionDistance) {
+            const opacity = (1 - distance / connectionDistance) * 0.15 * Math.min(p1.layer, p2.layer);
+            ctx.strokeStyle = `rgba(132, 204, 22, ${opacity})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        });
+      });
+
+      // Update and draw particles
       particles.forEach((p) => {
+        // Mouse influence (subtle attraction)
+        const dx = mouseRef.current.x - p.x;
+        const dy = mouseRef.current.y - p.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < mouseInfluence && distance > 0) {
+          const force = (mouseInfluence - distance) / mouseInfluence * 0.01;
+          p.speedX += (dx / distance) * force;
+          p.speedY += (dy / distance) * force;
+        }
+
+        // Apply velocity with damping
         p.x += p.speedX;
         p.y += p.speedY;
+        p.speedX *= 0.99;
+        p.speedY *= 0.99;
 
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+        // Wrap around edges
+        if (p.x < -10) p.x = canvas.width + 10;
+        if (p.x > canvas.width + 10) p.x = -10;
+        if (p.y < -10) p.y = canvas.height + 10;
+        if (p.y > canvas.height + 10) p.y = -10;
 
-        ctx.fillStyle = `rgba(132, 204, 22, ${p.opacity})`;
+        // Pulsing effect
+        p.pulse += p.pulseSpeed;
+        const pulseOpacity = p.opacity * (0.7 + 0.3 * Math.sin(p.pulse));
+
+        // Draw glow
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
+        gradient.addColorStop(0, `rgba(132, 204, 22, ${pulseOpacity * 0.5})`);
+        gradient.addColorStop(1, 'transparent');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw core
+        ctx.fillStyle = `rgba(132, 204, 22, ${pulseOpacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
+
       raf = requestAnimationFrame(animate);
     };
 
@@ -177,8 +577,10 @@ const ParticleDrift: React.FC = () => {
     animate();
 
     window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', handleMouseMove);
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -187,44 +589,95 @@ const ParticleDrift: React.FC = () => {
 };
 
 // ----------------------------
-// CARDS + FAQ
+// CARDS + FAQ - Enhanced with 3D effects
 // ----------------------------
-const ServiceCard: React.FC<{ icon: any; title: string; description: string }> = ({ icon: Icon, title, description }) => (
-  <div className="glass-card p-6 sm:p-8 md:p-10 rounded-[28px] sm:rounded-[34px] md:rounded-[40px] group relative overflow-hidden flex flex-col items-start gap-4 sm:gap-5 md:gap-6">
-    <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-lime-500/10 blur-[50px] sm:blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-    <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl sm:rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:bg-lime-500 group-hover:text-black group-hover:border-lime-500 transition-all duration-700 shadow-inner group-hover:scale-110 group-hover:rotate-6">
-      <Icon size={24} className="sm:hidden" />
-      <Icon size={30} className="hidden sm:block" />
-    </div>
-    <div className="space-y-2 sm:space-y-3">
-      <h3 className="text-lg sm:text-xl md:text-2xl font-bold group-hover:text-lime-500 transition-colors tracking-tight font-jakarta">
-        {title}
-      </h3>
-      <p className="text-gray-400 leading-relaxed font-medium text-[13px] sm:text-sm md:text-base opacity-80 group-hover:opacity-100 transition-opacity">
-        {description}
-      </p>
-    </div>
-  </div>
-);
+const ServiceCard: React.FC<{ icon: any; title: string; description: string; index?: number }> = ({
+  icon: Icon,
+  title,
+  description,
+  index = 0,
+}) => {
+  const { ref, isVisible } = useScrollAnimation(0.2);
 
-const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
-  const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="border-b border-white/5 last:border-0 overflow-hidden">
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+      }`}
+      style={{ transitionDelay: `${index * 150}ms` }}
+    >
+      <TiltCard>
+        <div className="glass-card p-6 sm:p-8 md:p-10 rounded-[28px] sm:rounded-[34px] md:rounded-[40px] group relative overflow-hidden flex flex-col items-start gap-4 sm:gap-5 md:gap-6 h-full">
+          {/* Animated background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-lime-500/0 via-emerald-500/0 to-blue-500/0 group-hover:from-lime-500/5 group-hover:via-emerald-500/3 group-hover:to-blue-500/5 transition-all duration-700" />
+
+          {/* Animated glow on hover */}
+          <div className="absolute top-0 right-0 w-32 sm:w-40 h-32 sm:h-40 bg-lime-500/0 blur-[60px] sm:blur-[80px] group-hover:bg-lime-500/15 transition-all duration-700 pointer-events-none" />
+
+          {/* Shine effect */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+          </div>
+
+          {/* Icon with enhanced animation */}
+          <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-2xl sm:rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:bg-lime-500 group-hover:text-black group-hover:border-lime-500 transition-all duration-500 shadow-inner group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_0_30px_rgba(132,204,22,0.3)]">
+            <Icon size={24} className="sm:hidden transition-transform duration-500" />
+            <Icon size={30} className="hidden sm:block transition-transform duration-500" />
+
+            {/* Sparkle effect on hover */}
+            <Sparkles
+              size={12}
+              className="absolute -top-1 -right-1 text-lime-400 opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:scale-125"
+            />
+          </div>
+
+          {/* Content */}
+          <div className="space-y-2 sm:space-y-3 relative z-10">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold group-hover:text-lime-500 transition-colors duration-300 tracking-tight font-jakarta">
+              {title}
+            </h3>
+            <p className="text-gray-400 leading-relaxed font-medium text-[13px] sm:text-sm md:text-base opacity-80 group-hover:opacity-100 transition-opacity duration-500">
+              {description}
+            </p>
+          </div>
+
+          {/* Bottom accent line */}
+          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-lime-500/0 to-transparent group-hover:via-lime-500/50 transition-all duration-700" />
+        </div>
+      </TiltCard>
+    </div>
+  );
+};
+
+const FAQItem: React.FC<{ question: string; answer: string; index?: number }> = ({ question, answer, index = 0 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { ref, isVisible } = useScrollAnimation(0.2);
+
+  return (
+    <div
+      ref={ref}
+      className={`border-b border-white/5 last:border-0 overflow-hidden transition-all duration-700 ${
+        isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+      }`}
+      style={{ transitionDelay: `${index * 100}ms` }}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full py-5 sm:py-6 md:py-8 flex items-center justify-between text-left group transition-all gap-4"
       >
         <span
           className={`text-[14px] sm:text-base md:text-xl font-bold transition-all duration-500 pr-2 ${
-            isOpen ? 'text-lime-500 translate-x-1 sm:translate-x-2' : 'text-gray-300'
+            isOpen ? 'text-lime-500 translate-x-1 sm:translate-x-2' : 'text-gray-300 group-hover:text-white'
           }`}
         >
           {question}
         </span>
         <div
-          className={`flex-shrink-0 p-2 sm:p-2.5 rounded-full border-2 transition-all duration-700 ${
-            isOpen ? 'border-lime-500 rotate-180 bg-lime-500 text-black' : 'border-white/10 text-gray-500 hover:border-white/30'
+          className={`flex-shrink-0 p-2 sm:p-2.5 rounded-full border-2 transition-all duration-500 ${
+            isOpen
+              ? 'border-lime-500 rotate-180 bg-lime-500 text-black shadow-[0_0_20px_rgba(132,204,22,0.4)]'
+              : 'border-white/10 text-gray-500 hover:border-white/30 group-hover:border-lime-500/50'
           }`}
         >
           <ChevronDown size={16} className="sm:hidden" />
@@ -232,7 +685,7 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, ans
         </div>
       </button>
       <div
-        className={`transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+        className={`transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${
           isOpen ? 'max-h-[520px] pb-6 sm:pb-8 md:pb-10 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
@@ -602,73 +1055,147 @@ const GTMStrategy: React.FC = () => {
 };
 
 // ----------------------------
-// MAIN PAGE
+// MAIN PAGE - Enhanced with cutting-edge effects
 // ----------------------------
 const Home: React.FC = () => {
   const [scrolled, setScrolled] = useState(0);
+  const [heroLoaded, setHeroLoaded] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY);
     window.addEventListener('scroll', handleScroll);
+
+    // Trigger hero animations after mount
+    setTimeout(() => setHeroLoaded(true), 100);
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen relative font-jakarta bg-[#050505] selection:bg-lime-500 selection:text-black">
+    <div className="min-h-screen relative font-jakarta bg-[#050505] selection:bg-lime-500 selection:text-black overflow-x-hidden">
+      {/* Enhanced noise overlay */}
       <div className="noise-overlay" />
+
+      {/* Cursor-following glow (desktop only) */}
+      <CursorGlow />
+
+      {/* Enhanced particle system */}
       <ParticleDrift />
+
+      {/* Floating orbs for depth */}
+      <FloatingOrbs />
+
+      {/* Navigation */}
       <Navbar />
 
-      {/* Background elements */}
+      {/* Background elements with enhanced parallax */}
       <div className="fixed inset-0 shimmer-grid opacity-15 sm:opacity-20 pointer-events-none z-0" />
+
+      {/* Morphing blob backgrounds */}
+      <MorphingBlob className="top-[5%] left-[5%] w-[400px] h-[400px] md:w-[600px] md:h-[600px] opacity-30 blur-3xl" />
+      <MorphingBlob className="bottom-[20%] right-[10%] w-[300px] h-[300px] md:w-[500px] md:h-[500px] opacity-20 blur-3xl" />
+
+      {/* Animated gradient orbs with enhanced parallax */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none z-0 overflow-hidden"
-        style={{ transform: `translate(-50%, ${scrolled * 0.06}px)` }}
+        style={{ transform: `translate(-50%, ${scrolled * 0.08}px)` }}
       >
-        <div className="absolute top-[10%] left-[5%] sm:left-[10%] w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] bg-lime-600/8 sm:bg-lime-600/10 blur-[100px] sm:blur-[140px] md:blur-[180px] rounded-full mix-blend-screen animate-pulse-slow" />
-        <div className="absolute top-[40%] right-[5%] sm:right-[10%] w-[240px] h-[240px] sm:w-[350px] sm:h-[350px] md:w-[440px] md:h-[440px] lg:w-[500px] lg:h-[500px] bg-blue-600/8 sm:bg-blue-600/10 blur-[100px] sm:blur-[140px] md:blur-[180px] rounded-full mix-blend-screen animate-gradient-slow" />
-        <div className="absolute bottom-[10%] left-[15%] sm:left-[20%] w-[300px] h-[300px] sm:w-[450px] sm:h-[450px] md:w-[620px] md:h-[620px] lg:w-[700px] lg:h-[700px] bg-emerald-600/4 sm:bg-emerald-600/5 blur-[120px] sm:blur-[160px] md:blur-[200px] rounded-full mix-blend-screen" />
+        <div className="absolute top-[10%] left-[5%] sm:left-[10%] w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] md:w-[520px] md:h-[520px] lg:w-[600px] lg:h-[600px] bg-lime-600/10 sm:bg-lime-600/12 blur-[100px] sm:blur-[140px] md:blur-[180px] rounded-full mix-blend-screen animate-pulse-slow" />
+        <div className="absolute top-[40%] right-[5%] sm:right-[10%] w-[240px] h-[240px] sm:w-[350px] sm:h-[350px] md:w-[440px] md:h-[440px] lg:w-[500px] lg:h-[500px] bg-blue-600/10 sm:bg-blue-600/12 blur-[100px] sm:blur-[140px] md:blur-[180px] rounded-full mix-blend-screen animate-gradient-slow" />
+        <div className="absolute bottom-[10%] left-[15%] sm:left-[20%] w-[300px] h-[300px] sm:w-[450px] sm:h-[450px] md:w-[620px] md:h-[620px] lg:w-[700px] lg:h-[700px] bg-emerald-600/6 sm:bg-emerald-600/8 blur-[120px] sm:blur-[160px] md:blur-[200px] rounded-full mix-blend-screen animate-float-orb" />
+
+        {/* Additional accent orb */}
+        <div className="absolute top-[60%] left-[50%] w-[200px] h-[200px] md:w-[300px] md:h-[300px] bg-purple-600/5 blur-[100px] md:blur-[150px] rounded-full mix-blend-screen animate-gradient-slow" style={{ animationDelay: '5s' }} />
       </div>
 
       <main className="relative z-10 pt-2 md:pt-22 px-3 sm:px-4 md:px-6 overflow-hidden">
-        {/* Hero */}
-        <section id="hero" className="max-w-7xl mx-auto min-h-[calc(100vh-80px)] md:min-h-0 py-8 md:py-16 text-center relative flex flex-col justify-center px-1">
-          <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-full bg-white/5 border border-white/10 text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] sm:tracking-[0.35em] md:tracking-[0.4em] text-lime-400 mb-6 sm:mb-7 shadow-2xl animate-bounce-slow mx-auto">
-            <span className="inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-lime-500/10">
+        {/* Enhanced Hero Section */}
+        <section
+          ref={heroRef}
+          id="hero"
+          className="max-w-7xl mx-auto min-h-[calc(100vh-80px)] md:min-h-0 py-8 md:py-16 text-center relative flex flex-col justify-center px-1"
+        >
+          {/* Animated badge */}
+          <div
+            className={`inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-full bg-white/5 border border-white/10 text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] sm:tracking-[0.35em] md:tracking-[0.4em] text-lime-400 mb-6 sm:mb-7 shadow-2xl mx-auto transition-all duration-1000 ${
+              heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'
+            }`}
+          >
+            <span className="inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-lime-500/10 animate-pulse">
               <Workflow size={12} className="text-lime-400 sm:hidden" />
               <Workflow size={14} className="text-lime-400 hidden sm:block" />
             </span>
-            Operational Excellence
+            <span className="relative">
+              Operational Excellence
+              <span className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:200%_100%]" />
+            </span>
           </div>
 
-          <h1 className="text-[38px] leading-[1] sm:text-5xl md:text-6xl lg:text-[110px] font-jakarta font-extrabold tracking-tighter mb-5 sm:mb-7 text-white px-2">
-            Outbound GTM Architecture <br className="hidden sm:block" />
+          {/* Animated hero title with text reveal */}
+          <h1
+            className={`text-[38px] leading-[1] sm:text-5xl md:text-6xl lg:text-[110px] font-jakarta font-extrabold tracking-tighter mb-5 sm:mb-7 text-white px-2 transition-all duration-1000 delay-200 ${
+              heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+            }`}
+          >
+            <span className="inline-block hero-text-reveal">Outbound GTM Architecture</span>
+            <br className="hidden sm:block" />
             <span className="sm:hidden"> </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-emerald-400 to-lime-500 animate-gradient-slow bg-[length:200%_auto]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 via-emerald-400 to-lime-500 animate-gradient-slow bg-[length:200%_auto] inline-block hero-text-reveal" style={{ animationDelay: '0.3s' }}>
               Built to Scale
             </span>
           </h1>
 
-          <p className="max-w-3xl mx-auto text-[15px] leading-[1.6] sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-9 font-medium opacity-90 px-3 sm:px-2">
+          {/* Animated subtitle */}
+          <p
+            className={`max-w-3xl mx-auto text-[15px] leading-[1.6] sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-9 font-medium opacity-90 px-3 sm:px-2 transition-all duration-1000 delay-500 ${
+              heroLoaded ? 'opacity-90 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
             From ICP definition to tooling and workflows, we design outbound systems teams can actually run.
           </p>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 px-2">
-            <a
+          {/* Enhanced CTA section */}
+          <div
+            className={`flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 px-2 transition-all duration-1000 delay-700 ${
+              heroLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <MagneticButton
               href={CAL_LINK}
-              target="_blank"
-              rel="noreferrer"
-              className="group relative w-full sm:w-auto px-8 sm:px-10 md:px-14 py-4 sm:py-5 md:py-7 bg-lime-500 text-black font-black text-[15px] sm:text-base md:text-xl rounded-2xl transition-all duration-500 hover:scale-[1.02] md:hover:scale-110 active:scale-[0.98] shadow-[0_15px_40px_rgba(132,204,22,0.35)] sm:shadow-[0_20px_50px_rgba(132,204,22,0.3)] overflow-hidden"
+              className="group relative w-full sm:w-auto px-8 sm:px-10 md:px-14 py-4 sm:py-5 md:py-7 bg-lime-500 text-black font-black text-[15px] sm:text-base md:text-xl rounded-2xl transition-all duration-500 hover:scale-[1.02] md:hover:scale-105 active:scale-[0.98] shadow-[0_15px_40px_rgba(132,204,22,0.35)] sm:shadow-[0_20px_50px_rgba(132,204,22,0.3)] overflow-hidden hover:shadow-[0_25px_60px_rgba(132,204,22,0.5)]"
             >
               <span className="relative z-10 flex items-center justify-center gap-3 md:gap-4">
                 Book a Free GTM Audit
-                <ArrowRight size={20} strokeWidth={3} className="group-hover:translate-x-1 md:group-hover:translate-x-2 transition-transform sm:w-[22px] sm:h-[22px]" />
+                <ArrowRight
+                  size={20}
+                  strokeWidth={3}
+                  className="group-hover:translate-x-1 md:group-hover:translate-x-2 transition-transform duration-300 sm:w-[22px] sm:h-[22px]"
+                />
               </span>
+              {/* Animated shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
+              {/* Hover fill effect */}
               <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            </a>
+            </MagneticButton>
 
             <div className="flex flex-col items-center md:items-start gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] sm:tracking-[0.18em] text-gray-500 mt-1 md:mt-0">
-              <span>Trusted by 50+ scaling startups</span>
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse" />
+                Trusted by 50+ scaling startups
+              </span>
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div
+            className={`absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 transition-all duration-1000 delay-1000 ${
+              heroLoaded ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}
+          >
+            <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold">Scroll</span>
+            <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-2">
+              <div className="w-1 h-2 rounded-full bg-lime-500 animate-scroll-indicator" />
             </div>
           </div>
         </section>
@@ -700,16 +1227,19 @@ const Home: React.FC = () => {
               icon={Database}
               title="CRM Foundations"
               description="We implement and optimize your CRM (HubSpot, Salesforce, Attio, or any stack) so forecasting, pipeline, ownership, and reporting stay clean as headcount grows."
+              index={0}
             />
             <ServiceCard
               icon={Target}
               title="ICP, Data & Outbound"
               description="We reverse-engineer ICP from closed-won deals, source and segment the right accounts, enrich with the right signals, and launch outbound with strong deliverability and consistent meeting volume."
+              index={1}
             />
             <ServiceCard
               icon={Workflow}
               title="Automation & AI SDRs"
               description="n8n workflows synced with your CRM: enrichment, routing, intent signals, AI inbound SDRs, content automation, and visitor identification that turns traffic into meetings."
+              index={2}
             />
           </div>
         </section>
@@ -812,22 +1342,27 @@ const Home: React.FC = () => {
             <FAQItem
               question="Who is this for?"
               answer="B2B SaaS and high-ticket teams that want outbound to behave like a system: predictable inputs, clean data, strong deliverability, and consistent meetings."
+              index={0}
             />
             <FAQItem
               question="What do you deliver in the audit?"
               answer="A concise teardown of your current setup (CRM, ICP, list quality, deliverability, tooling, routing) plus a prioritized build plan so you know exactly what to fix first."
+              index={1}
             />
             <FAQItem
               question="How long does setup take?"
               answer="Most builds land in 14-28 days depending on scope, access, and how much you want automated end-to-end."
+              index={2}
             />
             <FAQItem
               question="Do you run campaigns for us or hand it over?"
               answer="We build the system, document it, and train your team to run it. If you need help ramping output, we can support early execution too."
+              index={3}
             />
             <FAQItem
               question="What tools do you work with?"
-              answer="We’re tool-agnostic. We recommend and implement the stack that fits your workflow, needs, and budget (CRM, enrichment, sending, automation)."
+              answer="We're tool-agnostic. We recommend and implement the stack that fits your workflow, needs, and budget (CRM, enrichment, sending, automation)."
+              index={4}
             />
           </div>
         </section>
