@@ -16,6 +16,8 @@ import {
   LineChart,
   Monitor,
   CheckCircle2,
+  Menu,
+  X,
 } from 'lucide-react';
 
 const CAL_LINK = 'https://cal.com/dino-lukovac-7ap2jt/freegtmaudit';
@@ -23,95 +25,93 @@ const CAL_LINK = 'https://cal.com/dino-lukovac-7ap2jt/freegtmaudit';
 // ----------------------------
 // NAVBAR (single source of truth)
 // ----------------------------
+const navItems = [
+  { label: 'Services', href: '#services' },
+  { label: 'Process', href: '#process' },
+  { label: 'Content Momentum', href: '#content-momentum' },
+  { label: 'FAQ', href: '#faq' },
+];
+
 const Navbar: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const items = [
-    { label: 'Outbound Automation', href: '/outbound-automation' },
-    { label: 'Deliverability', href: '/cold-email-deliverability' },
-    { label: 'Guides', href: '/guides' },
-    { label: 'Compare', href: '/compare' },
-    { label: 'Glossary', href: '/glossary' },
-  ];
-
-  const close = () => setOpen(false);
+  const handleNavClick = (href: string) => {
+    setMobileMenuOpen(false);
+    const el = document.querySelector(href);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[60] bg-black/70 backdrop-blur-2xl border-b border-white/5">
-      <div className="py-0.0 px-4 md:py-2 md:px-12">
+      <div className="py-2 px-4 md:py-2 md:px-12">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
           {/* Logo */}
           <a href="/" className="flex items-center gap-3" aria-label="GTM Vector Home">
             <img src="/gtm-vector-logo.png" alt="GTM Vector" className="h-9 w-auto md:h-10" />
           </a>
 
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
-            {items.map((it) => (
-              <a
-                key={it.href}
-                href={it.href}
-                className="hover:text-lime-500 transition-all hover:tracking-[0.28em]"
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
+            {navItems.map((item) => (
+              <button
+                key={item.href}
+                onClick={() => handleNavClick(item.href)}
+                className="text-gray-400 hover:text-lime-500 font-bold text-sm uppercase tracking-[0.15em] transition-colors"
               >
-                {it.label}
-              </a>
+                {item.label}
+              </button>
             ))}
           </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center">
+          {/* CTA + Mobile Menu Button */}
+          <div className="flex items-center gap-4">
             <a
               href={CAL_LINK}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-lime-500 text-black font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-105 hover:bg-white"
+              className="hidden md:inline-flex items-center justify-center px-6 py-3 rounded-xl bg-lime-500 text-black font-black text-xs uppercase tracking-[0.2em] transition-all hover:scale-105 hover:bg-white"
             >
               Get in touch
             </a>
-          </div>
 
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-2xl border border-white/10 bg-white/5 text-white"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-          >
-            <div className="flex flex-col gap-1.5">
-              <span className={`h-0.5 w-6 bg-white transition-all ${open ? 'translate-y-2 rotate-45' : ''}`} />
-              <span className={`h-0.5 w-6 bg-white transition-all ${open ? 'opacity-0' : ''}`} />
-              <span className={`h-0.5 w-6 bg-white transition-all ${open ? '-translate-y-2 -rotate-45' : ''}`} />
-            </div>
-          </button>
+            {/* Hamburger Menu Button (Mobile) */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-white hover:text-lime-500 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile panel */}
-      <div className={`md:hidden overflow-hidden transition-all duration-300 ${open ? 'max-h-[520px]' : 'max-h-0'}`}>
-        <div className="px-5 pb-5 pt-2 border-t border-white/5">
-          <div className="flex flex-col gap-3 text-sm font-bold text-gray-200">
-            {items.map((it) => (
-              <a
-                key={it.href}
-                href={it.href}
-                onClick={close}
-                className="py-3 px-4 rounded-2xl bg-white/5 border border-white/10 active:scale-[0.99]"
-              >
-                {it.label}
-              </a>
-            ))}
-
-            <a
-              href={CAL_LINK}
-              target="_blank"
-              rel="noreferrer"
-              onClick={close}
-              className="mt-2 inline-flex items-center justify-center py-3 rounded-2xl bg-lime-500 text-black font-black uppercase tracking-[0.18em] text-xs"
+      {/* Mobile Menu Panel */}
+      <div
+        className={`md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-2xl border-b border-white/10 transition-all duration-300 overflow-hidden ${
+          mobileMenuOpen ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-6 py-6 flex flex-col gap-4">
+          {navItems.map((item) => (
+            <button
+              key={item.href}
+              onClick={() => handleNavClick(item.href)}
+              className="text-left text-gray-300 hover:text-lime-500 font-bold text-base uppercase tracking-[0.15em] transition-colors py-3 border-b border-white/5 last:border-0"
             >
-              Get in touch
-            </a>
-          </div>
+              {item.label}
+            </button>
+          ))}
+          <a
+            href={CAL_LINK}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex items-center justify-center px-6 py-4 rounded-xl bg-lime-500 text-black font-black text-sm uppercase tracking-[0.2em] transition-all hover:bg-white"
+          >
+            Get in touch
+          </a>
         </div>
       </div>
     </nav>
@@ -251,6 +251,111 @@ interface StrategyStep {
   tools: { name: string; icon?: React.ReactNode; color?: string }[];
   position: 'left' | 'right' | 'center';
 }
+
+// ----------------------------
+// CONTENT MOMENTUM SECTION
+// ----------------------------
+interface ContentStep {
+  title: string;
+  tools?: string[];
+  branches?: { left: string; right: string };
+}
+
+const contentMomentumSteps: ContentStep[] = [
+  { title: 'Scrape Posts', tools: ['Apify', 'LinkedIn', 'Phantom', 'X'] },
+  { branches: { left: 'Create Assets', right: 'Create Posts' } },
+  { title: 'Plan the Calendar', tools: ['Notion'] },
+  { title: 'Make Posts', tools: ['LinkedIn'] },
+  { title: 'Engage Daily', tools: ['Expandi', 'Phantom'] },
+  { branches: { left: 'Commenting', right: 'Lead Magnet Replies' } },
+  { title: 'Capture Interest', tools: ['Clay', 'n8n'] },
+  { branches: { left: 'Social Listening', right: 'Profile Views' } },
+  { title: 'Pass to Outbound', tools: ['HubSpot', 'Clay'] },
+];
+
+const ContentMomentumSection: React.FC = () => {
+  return (
+    <section id="content-momentum" className="max-w-5xl mx-auto py-16 md:py-24 mb-16 md:mb-24 relative scroll-mt-24">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none -z-10">
+        <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] bg-lime-500/5 blur-[100px] rounded-full" />
+        <div className="absolute bottom-[30%] right-[20%] w-[300px] h-[300px] bg-emerald-500/5 blur-[100px] rounded-full" />
+      </div>
+
+      {/* Header */}
+      <div className="text-center mb-14 md:mb-20">
+        <div className="text-lime-500 text-[10px] font-black uppercase tracking-[0.4em] mb-5 md:mb-6 flex items-center justify-center gap-4">
+          <div className="w-12 h-[1px] bg-lime-500/50" /> Content Engine <div className="w-12 h-[1px] bg-lime-500/50" />
+        </div>
+        <h2 className="text-4xl sm:text-5xl md:text-7xl font-jakarta font-bold tracking-tight mb-5 md:mb-6 text-white">
+          Content Momentum System
+        </h2>
+        <p className="text-gray-400 text-base sm:text-lg md:text-xl font-medium opacity-80 max-w-2xl mx-auto">
+          An 8-step content system that has supported <span className="text-lime-500 font-bold">$14M+</span> in client revenue
+        </p>
+      </div>
+
+      {/* Flowchart */}
+      <div className="relative">
+        {/* Vertical connector line */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-lime-500/40 via-lime-500/20 to-lime-500/40 -translate-x-1/2 hidden md:block" />
+
+        <div className="flex flex-col gap-6 md:gap-8">
+          {contentMomentumSteps.map((step, idx) => {
+            if (step.branches) {
+              // Render branching step
+              return (
+                <div key={idx} className="relative">
+                  {/* Horizontal connector */}
+                  <div className="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-[2px] bg-lime-500/20 -translate-y-1/2" />
+                  <div className="hidden md:block absolute top-1/2 left-1/2 w-3 h-3 rounded-full bg-lime-500/30 border-2 border-lime-500/50 -translate-x-1/2 -translate-y-1/2" />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-16 px-0 md:px-8">
+                    <div className="glass-card p-5 md:p-6 rounded-2xl border border-white/10 hover:border-lime-500/30 transition-all duration-300 group md:ml-auto md:mr-8">
+                      <span className="text-white font-bold text-sm md:text-base group-hover:text-lime-500 transition-colors">
+                        {step.branches.left}
+                      </span>
+                    </div>
+                    <div className="glass-card p-5 md:p-6 rounded-2xl border border-white/10 hover:border-lime-500/30 transition-all duration-300 group md:mr-auto md:ml-8">
+                      <span className="text-white font-bold text-sm md:text-base group-hover:text-lime-500 transition-colors">
+                        {step.branches.right}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            // Render single step
+            return (
+              <div key={idx} className="flex justify-center relative">
+                <div className="glass-card p-5 md:p-6 rounded-2xl border border-white/10 hover:border-lime-500/40 transition-all duration-300 group w-full md:w-auto md:min-w-[320px] hover:shadow-[0_10px_40px_-10px_rgba(132,204,22,0.15)]">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-white font-bold text-sm md:text-base group-hover:text-lime-500 transition-colors">
+                      {step.title}
+                    </span>
+                    {step.tools && (
+                      <div className="flex items-center gap-2 flex-wrap justify-end">
+                        {step.tools.map((tool, tIdx) => (
+                          <span
+                            key={tIdx}
+                            className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-400 transition-colors"
+                          >
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const strategySteps: StrategyStep[] = [
   {
@@ -504,8 +609,8 @@ const Home: React.FC = () => {
 
       <main className="relative z-10 pt-2 md:pt-22 px-4 sm:px-6 overflow-hidden">
         {/* Hero */}
-        <section className="max-w-7xl mx-auto py-10 md:py-16 text-center relative">
-          <div className="inline-flex items-center gap-3 px-5 md:px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-[9px] md:text-[10px] font-black uppercase tracking-[0.35em] md:tracking-[0.4em] text-lime-400 mb-7 shadow-2xl animate-bounce-slow">
+        <section id="hero" className="max-w-7xl mx-auto min-h-[calc(100vh-60px)] md:min-h-0 py-10 md:py-16 text-center relative flex flex-col justify-center">
+          <div className="inline-flex items-center gap-3 px-5 md:px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-[9px] md:text-[10px] font-black uppercase tracking-[0.35em] md:tracking-[0.4em] text-lime-400 mb-7 shadow-2xl animate-bounce-slow mx-auto">
             <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-lime-500/10">
               <Workflow size={14} className="text-lime-400" />
             </span>
@@ -647,6 +752,9 @@ const Home: React.FC = () => {
             ))}
           </div>
         </section>
+
+        {/* Content Momentum */}
+        <ContentMomentumSection />
 
         {/* Stack statement */}
         <section className="max-w-6xl mx-auto py-12 md:py-20 mb-16 md:mb-24 text-center">
